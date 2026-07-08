@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Lead {
+  id           String         @id @default(cuid())
+  businessName String
+  contactName  String
+  email        String
+  phone        String?
+  industry     String
+  employees    Int?
+  source       String         @default("website")
+  status       LeadStatus     @default(NEW)
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  conversations Conversation[]
+  quotes       Quote[]
+  bookings     Booking[]
+}
+
+enum LeadStatus {
+  NEW
+  QUALIFIED
+  QUOTED
+  BOOKED
+  WON
+  LOST
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  sessionId String   @unique
+  messages  Json     @default("[]")
+  summary   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Quote {
+  id              String      @id @default(cuid())
+  quoteNumber     String      @unique
+  leadId          String?
+  lead            Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  businessName    String
+  contactName     String
+  email           String
+  industry        String
+  employees       Int?
+  websiteNeeds    String?
+  automationNeeds String?
+  budgetRange     String
+  timeline        String
+  projectSummary  String
+  recommendedSolution String
+  deliverables    String[]
+  estimatedTimeline String
+  priceEstimate   Int
+  currency        String      @default("ZAR")
+  terms           String
+  status          QuoteStatus @default(SENT)
+  pdfUrl          String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  bookings        Booking[]
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  DECLINED
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  quoteId     String?
+  quote       Quote?        @relation(fields: [quoteId], references: [id], onDelete: SetNull)
+  leadId      String?
+  lead        Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  name        String
+  email       String
+  company     String?
+  scheduledAt DateTime
+  durationMin Int           @default(30)
+  timezone    String        @default("Africa/Johannesburg")
+  notes       String?
+  status      BookingStatus @default(CONFIRMED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String
+  path      String?
+  sessionId String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([createdAt])
+}
+
+model AdminProfile {
+  id        String   @id
+  email     String   @unique
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+
+  @@map("admin_profiles")
+}

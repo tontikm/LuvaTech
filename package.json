@@ -3,15 +3,33 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "npm run db:sync-env && next dev -p 3002 --webpack",
+    "build": "npm run db:sync-env && prisma generate && next build",
+    "start": "next start -p 3002",
+    "lint": "eslint",
+    "db:sync-env": "cp .env.local .env",
+    "db:generate": "npm run db:sync-env && prisma generate",
+    "db:push": "npm run db:sync-env && prisma db push",
+    "db:studio": "npm run db:sync-env && prisma studio",
+    "env:check": "npx tsx scripts/verify-env.ts",
+    "admin:setup": "npm run db:sync-env && npx tsx scripts/setup-admin.ts"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.8",
+    "@ai-sdk/react": "^4.0.18",
+    "@prisma/client": "^6.19.3",
+    "@react-pdf/renderer": "^4.5.1",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.110.1",
+    "ai": "^7.0.17",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.23.0",
     "next": "16.2.9",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,7 +38,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }
