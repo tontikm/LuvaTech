@@ -4,6 +4,7 @@ import {
   localCreateBooking,
   localCreateLead,
   localCreateQuote,
+  localGetBookedSlotKeys,
   localGetDashboardStats,
   localTrackEvent,
   localUpsertConversation,
@@ -17,8 +18,39 @@ import {
   type QuoteEstimate,
   type QuoteInput,
 } from "@/lib/quotes/pricing";
+import {
+  getAvailableSlots as buildAvailableSlots,
+  isSlotBooked,
+  isValidFutureSlot,
+  slotKeyFromDate,
+} from "@/lib/booking/slots";
 
-export { getAvailableSlots } from "@/lib/booking/slots";
+export async function getBookedSlotKeys(): Promise<Set<string>> {
+  const now = new Date();
+  if (!isDatabaseConfigured()) {
+    return localGetBookedSlotKeys();
+  }
+
+  const bookings = await prisma.booking.findMany({
+    where: { status: "CONFIRMED", scheduledAt: { gte: now } },
+    select: { scheduledAt: true },
+  });
+
+  return new Set(bookings.map((b) => slotKeyFromDate(b.scheduledAt)));
+}
+
+export async function getAvailableSlotsForBooking(days = 14) {
+  const bookedKeys = await getBookedSlotKeys();
+  return buildAvailableSlots(days, bookedKeys);
+}
+
+export async function isSlotTaken(date: string, time: string): Promise<boolean> {
+  if (!isValidFutureSlot(date, time)) return true;
+  const bookedKeys = await getBookedSlotKeys();
+  return isSlotBooked(date, time, bookedKeys);
+}
+
+export { isValidFutureSlot } from "@/lib/booking/slots";
 
 export async function createLead(input: QuoteInput & { source?: string }) {
   if (!isDatabaseConfigured()) {

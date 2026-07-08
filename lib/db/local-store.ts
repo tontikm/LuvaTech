@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { slotKeyFromDate } from "@/lib/booking/slots";
 import type { QuoteInput, QuoteEstimate } from "@/lib/quotes/pricing";
 import { nextQuoteNumber } from "@/lib/quotes/pricing";
 
@@ -245,6 +246,15 @@ export function localTrackEvent(input: {
   });
   if (db.analytics.length > 5000) db.analytics = db.analytics.slice(0, 5000);
   writeLocalDb(db);
+}
+
+export function localGetBookedSlotKeys(): Set<string> {
+  const db = readLocalDb();
+  const now = new Date();
+  const keys = db.bookings
+    .filter((b) => b.status === "CONFIRMED" && new Date(b.scheduledAt) >= now)
+    .map((b) => slotKeyFromDate(new Date(b.scheduledAt)));
+  return new Set(keys);
 }
 
 export function localGetDashboardStats() {

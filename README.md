@@ -73,6 +73,26 @@ ADMIN_DEV_BYPASS=false
 npm run db:studio  # browse data
 ```
 
+## Deploy to Vercel
+
+1. Copy env vars from [`.env.example`](.env.example) into the Vercel project (Settings → Environment Variables). Use your production URL for `NEXT_PUBLIC_SITE_URL` and set `ADMIN_DEV_BYPASS=false`.
+2. Run locally first:
+
+```bash
+npm run deploy:check   # env + build
+npm run db:push        # sync Prisma schema to Supabase
+npm run admin:setup -- you@email.com "Your Name"
+```
+
+3. Deploy:
+
+```bash
+npx vercel link      # once, connect to GitHub repo
+npx vercel --prod    # or enable auto-deploy from main in Vercel dashboard
+```
+
+4. In Supabase → Authentication → URL Configuration, add your Vercel domain to Redirect URLs.
+
 ## Ports
 
 | Project | Port |

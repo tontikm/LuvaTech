@@ -13,7 +13,8 @@ import {
   createBooking,
   createLead,
   generateAndSaveQuote,
-  getAvailableSlots,
+  getAvailableSlotsForBooking,
+  isSlotTaken,
   saveConversation,
 } from "@/lib/db/queries";
 import { calculateQuoteEstimate } from "@/lib/quotes/pricing";
@@ -107,7 +108,7 @@ const tools = {
   getAvailableSlots: tool({
     description: "Get available consultation booking slots for the next 2 weeks",
     inputSchema: z.object({}),
-    execute: async () => getAvailableSlots(14),
+    execute: async () => getAvailableSlotsForBooking(14),
   }),
   bookConsultation: tool({
     description: "Book a free consultation meeting",
@@ -125,6 +126,13 @@ const tools = {
         return {
           success: false,
           message: "That time slot has already passed. Please choose another available slot.",
+        };
+      }
+
+      if (await isSlotTaken(input.date, input.time)) {
+        return {
+          success: false,
+          message: "That time slot is no longer available. Please choose another.",
         };
       }
 

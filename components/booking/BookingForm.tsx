@@ -21,10 +21,24 @@ export function BookingForm() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/bookings")
-      .then((r) => r.json())
-      .then((d) => setSlots(d.slots ?? []))
-      .catch(() => {});
+    let cancelled = false;
+
+    async function loadSlots() {
+      try {
+        const res = await fetch("/api/bookings");
+        const d = await res.json();
+        if (!cancelled) setSlots(d.slots ?? []);
+      } catch {
+        /* ignore */
+      }
+    }
+
+    loadSlots();
+    const interval = setInterval(loadSlots, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, []);
 
   const daySlots = useMemo(() => {

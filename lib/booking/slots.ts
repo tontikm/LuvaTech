@@ -34,8 +34,36 @@ export function slotDateTime(date: string, time: string): Date {
   return new Date(`${date}T${time}:00+02:00`);
 }
 
+export function formatTimeInSast(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: SAST_TIMEZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const hour = parts.find((p) => p.type === "hour")?.value.padStart(2, "0") ?? "00";
+  const minute = parts.find((p) => p.type === "minute")?.value ?? "00";
+  return `${hour}:${minute}`;
+}
+
+export function slotKey(date: string, time: string): string {
+  return `${date}|${time}`;
+}
+
+export function slotKeyFromDate(date: Date): string {
+  return slotKey(formatDateInSast(date), formatTimeInSast(date));
+}
+
 export function isSlotInPast(date: string, time: string, now = new Date()): boolean {
   return slotDateTime(date, time) <= now;
+}
+
+export function isSlotBooked(
+  date: string,
+  time: string,
+  bookedKeys: ReadonlySet<string>,
+): boolean {
+  return bookedKeys.has(slotKey(date, time));
 }
 
 export function isValidFutureSlot(date: string, time: string, now = new Date()): boolean {
@@ -45,6 +73,7 @@ export function isValidFutureSlot(date: string, time: string, now = new Date()):
 
 export function getAvailableSlots(
   businessDays = 14,
+  bookedKeys: ReadonlySet<string> = new Set(),
 ): Array<{ date: string; slots: string[] }> {
   const result: Array<{ date: string; slots: string[] }> = [];
   const start = new Date();
@@ -57,7 +86,9 @@ export function getAvailableSlots(
     if (dow === 0 || dow === 6) continue;
 
     const dateStr = formatDateInSast(day);
-    const slots = BOOKING_SLOT_TIMES.filter((time) => !isSlotInPast(dateStr, time));
+    const slots = BOOKING_SLOT_TIMES.filter(
+      (time) => !isSlotInPast(dateStr, time) && !isSlotBooked(dateStr, time, bookedKeys),
+    );
 
     if (slots.length > 0) {
       result.push({ date: dateStr, slots: [...slots] });

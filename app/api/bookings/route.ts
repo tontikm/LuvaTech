@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createBooking, getAvailableSlots } from "@/lib/db/queries";
+import {
+  createBooking,
+  getAvailableSlotsForBooking,
+  isSlotTaken,
+} from "@/lib/db/queries";
 import { isValidFutureSlot } from "@/lib/booking/slots";
 import { sendBookingConfirmation } from "@/lib/email/templates";
 
@@ -14,7 +18,7 @@ const bookingSchema = z.object({
 });
 
 export async function GET() {
-  return NextResponse.json({ slots: getAvailableSlots(14) });
+  return NextResponse.json({ slots: await getAvailableSlotsForBooking(14) });
 }
 
 export async function POST(req: Request) {
@@ -25,6 +29,13 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "That time slot has already passed. Please choose another." },
         { status: 400 },
+      );
+    }
+
+    if (await isSlotTaken(body.date, body.time)) {
+      return NextResponse.json(
+        { error: "That time slot is no longer available. Please choose another." },
+        { status: 409 },
       );
     }
 
