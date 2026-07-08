@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Check, Loader2 } from "lucide-react";
 import { Button, GlassCard } from "@/components/ui";
+import { isSlotInPast } from "@/lib/booking/slots";
 
 type SlotDay = { date: string; slots: string[] };
 
@@ -26,7 +27,16 @@ export function BookingForm() {
       .catch(() => {});
   }, []);
 
-  const daySlots = slots.find((s) => s.date === selectedDate)?.slots ?? [];
+  const daySlots = useMemo(() => {
+    const slotsForDay = slots.find((s) => s.date === selectedDate)?.slots ?? [];
+    return slotsForDay.filter((time) => !isSlotInPast(selectedDate, time));
+  }, [slots, selectedDate]);
+
+  useEffect(() => {
+    if (selectedTime && selectedDate && isSlotInPast(selectedDate, selectedTime)) {
+      setSelectedTime("");
+    }
+  }, [selectedDate, selectedTime]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,10 +88,11 @@ export function BookingForm() {
                   : "border-white/10 text-white/60 hover:border-white/20"
               }`}
             >
-              {new Date(day.date + "T12:00:00").toLocaleDateString("en-ZA", {
+              {new Date(`${day.date}T12:00:00+02:00`).toLocaleDateString("en-ZA", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
+                timeZone: "Africa/Johannesburg",
               })}
             </button>
           ))}

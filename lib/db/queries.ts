@@ -18,6 +18,8 @@ import {
   type QuoteInput,
 } from "@/lib/quotes/pricing";
 
+export { getAvailableSlots } from "@/lib/booking/slots";
+
 export async function createLead(input: QuoteInput & { source?: string }) {
   if (!isDatabaseConfigured()) {
     return localCreateLead(input);
@@ -185,25 +187,6 @@ export async function getDashboardData() {
     },
     upcomingBookings: bookings,
   };
-}
-
-export function getAvailableSlots(days = 14): Array<{ date: string; slots: string[] }> {
-  const result: Array<{ date: string; slots: string[] }> = [];
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-
-  for (let d = 1; d <= days; d++) {
-    const day = new Date(start);
-    day.setDate(start.getDate() + d);
-    const dow = day.getDay();
-    if (dow === 0 || dow === 6) continue;
-
-    const dateStr = day.toISOString().slice(0, 10);
-    const slots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00"];
-    result.push({ date: dateStr, slots });
-  }
-
-  return result;
 }
 
 export type { StoredLead, StoredQuote, StoredBooking, QuoteInput, QuoteEstimate };

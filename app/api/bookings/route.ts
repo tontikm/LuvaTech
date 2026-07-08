@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createBooking, getAvailableSlots } from "@/lib/db/queries";
+import { isValidFutureSlot } from "@/lib/booking/slots";
 import { sendBookingConfirmation } from "@/lib/email/templates";
 
 const bookingSchema = z.object({
@@ -19,6 +20,14 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = bookingSchema.parse(await req.json());
+
+    if (!isValidFutureSlot(body.date, body.time)) {
+      return NextResponse.json(
+        { error: "That time slot has already passed. Please choose another." },
+        { status: 400 },
+      );
+    }
+
     const scheduledAt = new Date(`${body.date}T${body.time}:00+02:00`).toISOString();
 
     const booking = await createBooking({

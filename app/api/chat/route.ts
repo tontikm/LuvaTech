@@ -22,6 +22,7 @@ import { renderQuotationPdf } from "@/lib/pdf/render";
 import { SERVICES } from "@/lib/data/services";
 import { BRAND_NAME, CONTACT } from "@/lib/site";
 import { formatCurrency } from "@/lib/utils";
+import { isValidFutureSlot } from "@/lib/booking/slots";
 
 export const maxDuration = 60;
 
@@ -120,6 +121,13 @@ const tools = {
       quoteNumber: z.string().optional(),
     }),
     execute: async (input) => {
+      if (!isValidFutureSlot(input.date, input.time)) {
+        return {
+          success: false,
+          message: "That time slot has already passed. Please choose another available slot.",
+        };
+      }
+
       const scheduledAt = new Date(`${input.date}T${input.time}:00+02:00`).toISOString();
       const booking = await createBooking({
         name: input.name,
