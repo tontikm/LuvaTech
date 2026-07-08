@@ -1,6 +1,6 @@
 # LuvaTech
 
-Premium company website and live demo of AI automation capabilities.
+Premium company website and live demo of business automation capabilities.
 
 **Stack:** Next.js 16 · React 19 · Tailwind v4 · Prisma · Supabase · OpenAI · Resend · Framer Motion
 

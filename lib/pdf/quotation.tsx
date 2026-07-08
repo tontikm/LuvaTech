@@ -106,7 +106,7 @@ export function QuotationPdfDocument(props: QuotationPdfProps) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.brand}>{BRAND_NAME}</Text>
-          <Text style={styles.tagline}>AI Systems · Automation · Premium Web</Text>
+          <Text style={styles.tagline}>Business Automation · Workflows · Software</Text>
           <View style={styles.quoteMeta}>
             <View>
               <Text style={styles.label}>Prepared for</Text>

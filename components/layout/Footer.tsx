@@ -13,8 +13,8 @@ export function Footer() {
             </span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/50">
-            AI systems, automation, and premium web products for businesses that refuse to
-            operate manually.
+            Business automation, custom software, and integrated workflows for teams that
+            refuse to operate manually.
           </p>
         </div>
 

@@ -6,7 +6,7 @@ import { AnalyticsTracker } from "@/components/analytics/AnalyticsTracker";
 import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `${BRAND_NAME} · AI Systems & Business Automation`,
+  title: `${BRAND_NAME} · Business Automation & Software`,
   description: BRAND_DESCRIPTION,
   openGraph: {
     title: BRAND_TAGLINE,

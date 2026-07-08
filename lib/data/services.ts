@@ -1,3 +1,5 @@
+export type PackageTier = "teal" | "sky" | "violet" | "amber" | "rose";
+
 export type ServicePackage = {
   name: string;
   price: number;
@@ -5,6 +7,7 @@ export type ServicePackage = {
   description: string;
   includes: string[];
   highlighted?: boolean;
+  tier?: PackageTier;
 };
 
 export type Service = {
@@ -20,6 +23,8 @@ export type Service = {
   icon: string;
   packages: ServicePackage[];
 };
+
+export const PACKAGE_TIERS: PackageTier[] = ["amber", "sky", "teal", "violet", "rose"];
 
 export const SERVICES: Service[] = [
   {
@@ -40,49 +45,80 @@ export const SERVICES: Service[] = [
       "Multi-language and regional deployments",
     ],
     techStack: ["Next.js", "React", "Tailwind CSS", "Vercel", "Supabase"],
-    startingFrom: 45000,
-    timeline: "4 to 8 weeks",
+    startingFrom: 18000,
+    timeline: "2 to 8 weeks",
     icon: "Globe",
     packages: [
       {
-        name: "Launch",
-        price: 45000,
-        timeline: "4 to 5 weeks",
-        description: "A polished marketing site that looks premium and converts visitors.",
+        name: "Landing",
+        price: 18000,
+        timeline: "2 to 3 weeks",
+        description: "A focused single-page site with lead capture.",
         includes: [
-          "Up to 6 custom pages",
+          "One high-converting landing page",
+          "Responsive design and SEO basics",
+          "Contact or lead capture form",
+          "Analytics setup",
+          "Production deploy on Vercel",
+        ],
+        tier: "amber",
+      },
+      {
+        name: "Starter",
+        price: 28000,
+        timeline: "3 to 5 weeks",
+        description: "A polished marketing site for growing businesses.",
+        includes: [
+          "Up to 4 custom pages",
           "Responsive design and SEO basics",
           "Contact and lead capture forms",
           "Analytics setup",
           "Production deploy on Vercel",
         ],
+        tier: "sky",
       },
       {
         name: "Growth",
-        price: 75000,
-        timeline: "6 to 8 weeks",
-        description: "A conversion-focused site with CMS and deeper lead workflows.",
+        price: 52000,
+        timeline: "5 to 7 weeks",
+        description: "A conversion-focused site with deeper lead workflows.",
         includes: [
-          "Everything in Launch",
-          "CMS for easy content updates",
-          "Blog or resources section",
+          "Up to 8 custom pages",
+          "Everything in Starter",
           "CRM lead handoff",
+          "Blog or resources section",
           "A/B testing hooks",
         ],
         highlighted: true,
+        tier: "teal",
+      },
+      {
+        name: "Business",
+        price: 78000,
+        timeline: "6 to 9 weeks",
+        description: "CMS-powered site with content workflows and integrations.",
+        includes: [
+          "Everything in Growth",
+          "CMS for easy content updates",
+          "Multi-author content workflows",
+          "Advanced analytics and conversion tracking",
+          "Staging environment",
+        ],
+        tier: "violet",
       },
       {
         name: "Platform",
-        price: 120000,
+        price: 105000,
         timeline: "8 to 12 weeks",
         description: "Full web product experiences for multi-role or logged-in users.",
         includes: [
-          "Everything in Growth",
+          "Everything in Business",
           "Authenticated user areas",
           "Custom dashboards or portals",
           "API integrations",
           "Staging environment and QA cycle",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -104,26 +140,41 @@ export const SERVICES: Service[] = [
       "Human escalation workflows",
     ],
     techStack: ["OpenAI", "Vercel AI SDK", "Supabase", "Resend"],
-    startingFrom: 35000,
+    startingFrom: 18000,
     timeline: "2 to 4 weeks",
     icon: "MessageSquare",
     packages: [
       {
+        name: "FAQ Bot",
+        price: 18000,
+        timeline: "1 to 2 weeks",
+        description: "A lightweight assistant for common questions and lead capture.",
+        includes: [
+          "Floating chat widget",
+          "FAQ knowledge base training",
+          "Basic lead capture fields",
+          "Email notifications",
+          "Conversation logging",
+        ],
+        tier: "amber",
+      },
+      {
         name: "Starter Bot",
-        price: 35000,
+        price: 28000,
         timeline: "2 to 3 weeks",
         description: "A website assistant trained on your FAQs and services.",
         includes: [
-          "Floating chat widget",
-          "Business knowledge base training",
-          "Lead capture fields",
-          "Email notifications",
+          "Everything in FAQ Bot",
+          "Full services catalog training",
+          "Structured lead qualification",
+          "CRM-ready data export",
           "Conversation transcript logging",
         ],
+        tier: "sky",
       },
       {
         name: "Sales Assistant",
-        price: 65000,
+        price: 55000,
         timeline: "3 to 5 weeks",
         description: "An AI that qualifies leads, estimates pricing, and books demos.",
         includes: [
@@ -134,10 +185,11 @@ export const SERVICES: Service[] = [
           "Escalation to human agents",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Omni Channel",
-        price: 110000,
+        price: 95000,
         timeline: "5 to 8 weeks",
         description: "Assistants across web and WhatsApp with shared memory and analytics.",
         includes: [
@@ -147,6 +199,7 @@ export const SERVICES: Service[] = [
           "Quality monitoring dashboard",
           "Custom tool integrations",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -168,13 +221,27 @@ export const SERVICES: Service[] = [
       "Scheduled jobs and event-driven triggers",
     ],
     techStack: ["Node.js", "PostgreSQL", "REST APIs", "Webhooks"],
-    startingFrom: 40000,
-    timeline: "3 to 6 weeks",
+    startingFrom: 22000,
+    timeline: "2 to 6 weeks",
     icon: "Workflow",
     packages: [
       {
+        name: "Quick Win",
+        price: 22000,
+        timeline: "2 to 3 weeks",
+        description: "Automate one repetitive task with immediate time savings.",
+        includes: [
+          "Process discovery call",
+          "One focused automation",
+          "Basic error alerts",
+          "Run logging",
+          "Handover documentation",
+        ],
+        tier: "amber",
+      },
+      {
         name: "Single Flow",
-        price: 40000,
+        price: 35000,
         timeline: "3 to 4 weeks",
         description: "One high-impact process automated end to end.",
         includes: [
@@ -184,10 +251,11 @@ export const SERVICES: Service[] = [
           "Basic run logging",
           "Handover documentation",
         ],
+        tier: "sky",
       },
       {
         name: "Ops Suite",
-        price: 85000,
+        price: 72000,
         timeline: "5 to 7 weeks",
         description: "Multiple connected workflows across teams and tools.",
         includes: [
@@ -198,10 +266,11 @@ export const SERVICES: Service[] = [
           "Ops health dashboard",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Enterprise Ops",
-        price: 150000,
+        price: 130000,
         timeline: "8 to 12 weeks",
         description: "Department-wide automation with audit trails and controls.",
         includes: [
@@ -211,6 +280,7 @@ export const SERVICES: Service[] = [
           "Audit logging",
           "Ongoing iteration window",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -232,13 +302,27 @@ export const SERVICES: Service[] = [
       "Email and calendar sync",
     ],
     techStack: ["Next.js", "Supabase", "Prisma", "PostgreSQL"],
-    startingFrom: 55000,
-    timeline: "6 to 10 weeks",
+    startingFrom: 38000,
+    timeline: "5 to 10 weeks",
     icon: "Users",
     packages: [
       {
+        name: "Lite CRM",
+        price: 38000,
+        timeline: "5 to 6 weeks",
+        description: "Essential lead tracking for small sales teams.",
+        includes: [
+          "Lead and contact records",
+          "Simple pipeline stages",
+          "Notes and activity log",
+          "Basic reporting",
+          "Single-team access",
+        ],
+        tier: "amber",
+      },
+      {
         name: "Pipeline",
-        price: 55000,
+        price: 48000,
         timeline: "6 to 7 weeks",
         description: "A clean CRM for leads, deals, and follow-ups.",
         includes: [
@@ -248,10 +332,11 @@ export const SERVICES: Service[] = [
           "Basic reporting",
           "Role-based access",
         ],
+        tier: "sky",
       },
       {
         name: "Revenue CRM",
-        price: 95000,
+        price: 82000,
         timeline: "8 to 10 weeks",
         description: "Sales CRM with scoring, forecasts, and automation.",
         includes: [
@@ -262,10 +347,11 @@ export const SERVICES: Service[] = [
           "Revenue forecasting views",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Full Stack CRM",
-        price: 160000,
+        price: 145000,
         timeline: "10 to 14 weeks",
         description: "CRM plus customer success and service workflows.",
         includes: [
@@ -275,6 +361,7 @@ export const SERVICES: Service[] = [
           "Accounting integrations",
           "Audit logs and exports",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -296,13 +383,27 @@ export const SERVICES: Service[] = [
       "Embedded reporting for executives",
     ],
     techStack: ["React", "PostgreSQL", "Chart libraries", "Auth"],
-    startingFrom: 50000,
-    timeline: "5 to 8 weeks",
+    startingFrom: 32000,
+    timeline: "4 to 8 weeks",
     icon: "LayoutDashboard",
     packages: [
       {
+        name: "Starter Board",
+        price: 32000,
+        timeline: "4 to 5 weeks",
+        description: "A simple dashboard for your top metrics.",
+        includes: [
+          "Up to 4 KPI widgets",
+          "Secure login",
+          "Filters and date ranges",
+          "CSV export",
+          "Mobile-friendly layout",
+        ],
+        tier: "amber",
+      },
+      {
         name: "KPI Board",
-        price: 50000,
+        price: 42000,
         timeline: "5 to 6 weeks",
         description: "A focused dashboard for your most important metrics.",
         includes: [
@@ -312,10 +413,11 @@ export const SERVICES: Service[] = [
           "CSV export",
           "Mobile-friendly layout",
         ],
+        tier: "sky",
       },
       {
         name: "Ops Control",
-        price: 90000,
+        price: 78000,
         timeline: "6 to 8 weeks",
         description: "Multi-team dashboards with alerts and saved views.",
         includes: [
@@ -326,10 +428,11 @@ export const SERVICES: Service[] = [
           "Approval workflow cards",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Executive Suite",
-        price: 140000,
+        price: 120000,
         timeline: "8 to 12 weeks",
         description: "Company-wide reporting with department drill-downs.",
         includes: [
@@ -339,6 +442,7 @@ export const SERVICES: Service[] = [
           "Data warehouse connectors",
           "Admin configuration panel",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -360,26 +464,41 @@ export const SERVICES: Service[] = [
       "Waitlists and rescheduling",
     ],
     techStack: ["Next.js", "PostgreSQL", "Calendar APIs", "Resend"],
-    startingFrom: 30000,
-    timeline: "3 to 5 weeks",
+    startingFrom: 18000,
+    timeline: "2 to 5 weeks",
     icon: "Calendar",
     packages: [
       {
+        name: "Basic Book",
+        price: 18000,
+        timeline: "2 to 3 weeks",
+        description: "Simple online booking for a single calendar.",
+        includes: [
+          "Public booking page",
+          "Basic availability rules",
+          "Email confirmations",
+          "Admin calendar view",
+          "Embed on your website",
+        ],
+        tier: "amber",
+      },
+      {
         name: "Solo Book",
-        price: 30000,
+        price: 25000,
         timeline: "3 to 4 weeks",
         description: "Self-serve bookings for a single provider or team.",
         includes: [
-          "Public booking page",
-          "Availability rules",
-          "Email confirmations",
-          "Admin calendar view",
-          "Basic reminders",
+          "Everything in Basic Book",
+          "Advanced availability rules",
+          "Reminder emails",
+          "Customer booking history",
+          "Basic reporting",
         ],
+        tier: "sky",
       },
       {
         name: "Team Book",
-        price: 55000,
+        price: 48000,
         timeline: "4 to 6 weeks",
         description: "Multi-staff booking with routing and reminders.",
         includes: [
@@ -390,10 +509,11 @@ export const SERVICES: Service[] = [
           "CRM sync",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Network Book",
-        price: 95000,
+        price: 85000,
         timeline: "6 to 9 weeks",
         description: "Multi-location scheduling with waitlists and rescheduling.",
         includes: [
@@ -403,6 +523,7 @@ export const SERVICES: Service[] = [
           "Customer self-reschedule",
           "Reporting dashboard",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -424,26 +545,41 @@ export const SERVICES: Service[] = [
       "CRM and accounting integrations",
     ],
     techStack: ["React PDF", "PostgreSQL", "Resend", "OpenAI"],
-    startingFrom: 35000,
-    timeline: "3 to 6 weeks",
+    startingFrom: 22000,
+    timeline: "2 to 6 weeks",
     icon: "FileText",
     packages: [
       {
-        name: "Quote Lite",
-        price: 35000,
-        timeline: "3 to 4 weeks",
-        description: "Branded quote builder with PDF delivery.",
+        name: "Quote Starter",
+        price: 22000,
+        timeline: "2 to 3 weeks",
+        description: "Simple quote form with branded PDF output.",
         includes: [
           "Guided quote form",
           "Branded PDF output",
           "Email delivery",
           "Quote history",
+          "Fixed pricing templates",
+        ],
+        tier: "amber",
+      },
+      {
+        name: "Quote Lite",
+        price: 28000,
+        timeline: "3 to 4 weeks",
+        description: "Branded quote builder with flexible pricing rules.",
+        includes: [
+          "Everything in Quote Starter",
+          "Configurable line items",
+          "Discount rules",
+          "Quote history and search",
           "Basic pricing rules",
         ],
+        tier: "sky",
       },
       {
         name: "Sales Quotes",
-        price: 70000,
+        price: 58000,
         timeline: "4 to 6 weeks",
         description: "Package rules, approvals, and CRM tracking.",
         includes: [
@@ -454,10 +590,11 @@ export const SERVICES: Service[] = [
           "CRM sync",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Proposal Engine",
-        price: 120000,
+        price: 105000,
         timeline: "6 to 10 weeks",
         description: "AI-assisted proposals with versioning and signatures.",
         includes: [
@@ -467,6 +604,7 @@ export const SERVICES: Service[] = [
           "E-signature ready docs",
           "Accounting integration",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -488,13 +626,27 @@ export const SERVICES: Service[] = [
       "Integration health dashboards",
     ],
     techStack: ["Node.js", "PostgreSQL", "Redis", "Webhooks"],
-    startingFrom: 25000,
-    timeline: "2 to 4 weeks",
+    startingFrom: 15000,
+    timeline: "1 to 4 weeks",
     icon: "Plug",
     packages: [
       {
+        name: "Webhook",
+        price: 15000,
+        timeline: "1 to 2 weeks",
+        description: "Receive or send events between two systems.",
+        includes: [
+          "One webhook endpoint or listener",
+          "Payload mapping",
+          "Basic retry logic",
+          "Failure alerts",
+          "Documentation",
+        ],
+        tier: "amber",
+      },
+      {
         name: "One Connect",
-        price: 25000,
+        price: 22000,
         timeline: "2 to 3 weeks",
         description: "A reliable sync between two systems.",
         includes: [
@@ -504,10 +656,11 @@ export const SERVICES: Service[] = [
           "Failure alerts",
           "Documentation",
         ],
+        tier: "sky",
       },
       {
         name: "Hub Sync",
-        price: 55000,
+        price: 48000,
         timeline: "3 to 5 weeks",
         description: "Multiple integrations with monitoring.",
         includes: [
@@ -518,10 +671,11 @@ export const SERVICES: Service[] = [
           "Queue-based processing",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Platform Glue",
-        price: 100000,
+        price: 88000,
         timeline: "5 to 8 weeks",
         description: "Enterprise-grade middleware with observability.",
         includes: [
@@ -531,6 +685,7 @@ export const SERVICES: Service[] = [
           "Replay tools",
           "SLA-oriented monitoring",
         ],
+        tier: "rose",
       },
     ],
   },
@@ -552,26 +707,41 @@ export const SERVICES: Service[] = [
       "Uptime monitoring and alerting",
     ],
     techStack: ["Vercel", "AWS", "Supabase", "GitHub Actions"],
-    startingFrom: 20000,
+    startingFrom: 12000,
     timeline: "1 to 3 weeks",
     icon: "Cloud",
     packages: [
       {
-        name: "Launch Stack",
-        price: 20000,
-        timeline: "1 to 2 weeks",
-        description: "Production-ready hosting for a new Next.js app.",
+        name: "Essentials",
+        price: 12000,
+        timeline: "1 week",
+        description: "Get your app live with domain and SSL configured.",
         includes: [
           "Vercel production setup",
-          "Environment variables",
           "Custom domain SSL",
+          "Environment variables",
           "Basic uptime checks",
           "Deploy documentation",
         ],
+        tier: "amber",
+      },
+      {
+        name: "Launch Stack",
+        price: 18000,
+        timeline: "1 to 2 weeks",
+        description: "Production-ready hosting for a new Next.js app.",
+        includes: [
+          "Everything in Essentials",
+          "Database connection setup",
+          "Secrets management basics",
+          "Deploy runbook",
+          "Health check endpoint",
+        ],
+        tier: "sky",
       },
       {
         name: "Pro Ops",
-        price: 45000,
+        price: 38000,
         timeline: "2 to 4 weeks",
         description: "Staging, CI/CD, and backups for growing products.",
         includes: [
@@ -582,10 +752,11 @@ export const SERVICES: Service[] = [
           "Secrets management",
         ],
         highlighted: true,
+        tier: "teal",
       },
       {
         name: "Scale Cloud",
-        price: 90000,
+        price: 75000,
         timeline: "4 to 6 weeks",
         description: "Hardened multi-env infrastructure with observability.",
         includes: [
@@ -595,6 +766,7 @@ export const SERVICES: Service[] = [
           "Cost reviews",
           "Disaster recovery plan",
         ],
+        tier: "rose",
       },
     ],
   },

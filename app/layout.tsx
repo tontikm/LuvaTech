@@ -16,7 +16,7 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND_NAME} · AI Systems & Business Automation`,
+    default: `${BRAND_NAME} · Business Automation & Software`,
     template: `%s · ${BRAND_NAME}`,
   },
   description: BRAND_DESCRIPTION,

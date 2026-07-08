@@ -15,10 +15,10 @@ import { Button, GlassCard } from "@/components/ui";
 
 const FEATURES = [
   {
-    icon: Bot,
-    title: "AI Assistant",
+    icon: Workflow,
+    title: "Full Automation",
     description:
-      "Qualifies leads, answers questions, and generates quotes live on this site right now.",
+      "CRM pipelines, dashboards, and integrations connected end to end.",
   },
   {
     icon: FileText,
@@ -33,10 +33,10 @@ const FEATURES = [
       "Consultation scheduling built into the conversation flow with automated confirmations.",
   },
   {
-    icon: Workflow,
-    title: "Full Automation",
+    icon: Bot,
+    title: "AI Assistant",
     description:
-      "CRM pipelines, dashboards, and integrations connected end to end.",
+      "Qualifies leads, answers questions, and generates quotes live on this site right now.",
   },
 ];
 
@@ -95,7 +95,7 @@ export function HeroSection() {
             }}
           >
             <Bot className="h-4 w-4" />
-            Talk to AI Assistant
+            Ask a question
           </Button>
         </motion.div>
       </div>
@@ -115,7 +115,7 @@ export function FeaturesSection() {
             This website is the product demo.
           </h2>
           <p className="mt-4 text-white/50 leading-relaxed">
-            Every feature you interact with, from the AI assistant and quote generator to
+            Every feature you interact with, from automated workflows and quote generation to
             booking, is exactly what we build for clients.
           </p>
         </div>
@@ -156,8 +156,8 @@ export function CtaSection() {
               Ready to automate your business?
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-white/50">
-              Open the AI assistant and describe your project. You&apos;ll receive a
-              professional quotation in minutes.
+              Tell us what you want to automate. You&apos;ll receive a professional
+              quotation in minutes.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button

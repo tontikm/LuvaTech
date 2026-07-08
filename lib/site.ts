@@ -1,7 +1,7 @@
 export const BRAND_NAME = "LuvaTech";
-export const BRAND_TAGLINE = "AI systems that run your business.";
+export const BRAND_TAGLINE = "Business automation that runs your operations.";
 export const BRAND_DESCRIPTION =
-  "We design and ship AI assistants, automation, CRMs, and premium websites that remove repetitive work so your team can focus on growth.";
+  "We design and ship workflows, CRMs, dashboards, integrations, and websites that remove manual work so your team can focus on growth.";
 
 export const CONTACT = {
   email: "hello@luvatech.co.za",

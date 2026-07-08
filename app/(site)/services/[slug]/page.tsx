@@ -5,6 +5,7 @@ import { getService, SERVICES } from "@/lib/data/services";
 import { Badge, Button, GlassCard } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
 import { ServiceDemoEmbed } from "@/components/demos/ServiceDemoEmbed";
+import { PackageCard } from "@/components/services/PackageCard";
 
 export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
@@ -21,7 +22,7 @@ export default async function ServiceDetailPage({
 
   return (
     <div className="pt-32 pb-24">
-      <div className="mx-auto max-w-4xl px-6">
+      <div className="mx-auto max-w-6xl px-6">
         <div>
           <Link
             href="/services"
@@ -56,45 +57,9 @@ export default async function ServiceDetailPage({
           <p className="mt-2 text-sm text-white/50">
             Pick a starting point. We tailor scope after a short discovery call.
           </p>
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {service.packages.map((pkg) => (
-              <GlassCard
-                key={pkg.name}
-                className={
-                  pkg.highlighted
-                    ? "border-accent/40 bg-accent/[0.04] flex flex-col"
-                    : "flex flex-col"
-                }
-              >
-                {pkg.highlighted && (
-                  <p className="mb-3 text-xs font-medium uppercase tracking-wider text-accent">
-                    Most popular
-                  </p>
-                )}
-                <h3 className="font-display text-lg font-medium">{pkg.name}</h3>
-                <p className="mt-1 text-sm text-white/45">{pkg.description}</p>
-                <p className="mt-4 font-display text-2xl font-semibold">
-                  {formatCurrency(pkg.price)}
-                </p>
-                <p className="mt-1 text-xs text-white/40">{pkg.timeline}</p>
-                <ul className="mt-5 flex-1 space-y-2">
-                  {pkg.includes.map((item) => (
-                    <li key={item} className="flex gap-2 text-sm text-white/60">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/book" className="mt-6 block">
-                  <Button
-                    size="sm"
-                    variant={pkg.highlighted ? "primary" : "secondary"}
-                    className="w-full"
-                  >
-                    Book Demo
-                  </Button>
-                </Link>
-              </GlassCard>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            {service.packages.map((pkg, index) => (
+              <PackageCard key={pkg.name} pkg={pkg} index={index} />
             ))}
           </div>
         </section>
