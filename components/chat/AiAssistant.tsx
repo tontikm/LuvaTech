@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Bot, Calendar, FileText, Send, Sparkles, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui";
+import { Button, GradientRing } from "@/components/ui";
 
 function getMessageText(message: { parts: Array<{ type: string; text?: string }> }): string {
   return message.parts
@@ -69,25 +69,38 @@ export function AiAssistant() {
     <>
       <AnimatePresence>
         {!open && (
-          <motion.button
+          <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            type="button"
-            onClick={() => {
-              setOpen(true);
-              fetch("/api/analytics", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ type: "chat_start", sessionId }),
-              }).catch(() => {});
-            }}
-            className="fixed bottom-6 right-6 z-50 flex h-14 items-center gap-2 rounded-full border border-accent/30 bg-accent pl-4 pr-5 text-black shadow-2xl shadow-accent/20 transition-colors hover:bg-accent/90 sm:bottom-6"
-            aria-label="Open AI assistant"
+            className="fixed bottom-6 right-6 z-50"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
           >
-            <Sparkles className="h-5 w-5" />
-            <span className="text-sm font-medium">AI Assistant</span>
-          </motion.button>
+            <GradientRing variant="accent">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(true);
+                  fetch("/api/analytics", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ type: "chat_start", sessionId }),
+                  }).catch(() => {});
+                }}
+                className="flex h-14 items-center gap-2 rounded-full bg-accent pl-4 pr-5 text-black shadow-2xl shadow-accent/20 transition-colors hover:bg-accent/90"
+                aria-label="Open AI assistant"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 8, -8, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Sparkles className="h-5 w-5" />
+                </motion.span>
+                <span className="text-sm font-medium">AI Assistant</span>
+              </button>
+            </GradientRing>
+          </motion.div>
         )}
       </AnimatePresence>
 

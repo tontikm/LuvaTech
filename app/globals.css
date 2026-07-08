@@ -97,40 +97,54 @@ h3,
   animation: pulse-glow 4s ease-in-out infinite;
 }
 
-@property --glow-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes glow-rotate {
+@keyframes gradient-ring-spin {
   to {
-    --glow-angle: 360deg;
+    transform: rotate(360deg);
   }
 }
 
 .gradient-ring {
+  position: relative;
+  display: inline-flex;
   padding: 2px;
   border-radius: 9999px;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 0 32px -8px rgba(45, 212, 191, 0.45);
+}
+
+.gradient-ring::before {
+  content: "";
+  position: absolute;
+  inset: -100%;
   background: conic-gradient(
-    from var(--glow-angle),
+    from 0deg,
     transparent 0%,
     rgba(45, 212, 191, 0.95) 12%,
     rgba(244, 247, 247, 0.35) 18%,
     transparent 35%
   );
-  box-shadow: 0 0 32px -8px rgba(45, 212, 191, 0.45);
-  animation: glow-rotate 3.5s linear infinite;
+  animation: gradient-ring-spin 3.5s linear infinite;
 }
 
 .gradient-ring-inner {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
   border-radius: 9999px;
   background: #0a0d12;
 }
 
+.gradient-ring-inner--accent {
+  background: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .gradient-ring {
+  .gradient-ring::before {
     animation: none;
+  }
+
+  .gradient-ring {
     background: transparent;
     border: 1px solid rgba(45, 212, 191, 0.45);
     box-shadow: none;

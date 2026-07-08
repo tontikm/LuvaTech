@@ -42,7 +42,7 @@ const FEATURES = [
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
+    <section className="relative flex min-h-[100svh] items-center overflow-x-hidden">
       <div className="absolute inset-0 grid-bg" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(45,212,191,0.18),transparent_55%)]" />
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
@@ -79,19 +79,19 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.32 }}
-          className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+          className="mt-10 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center"
         >
-          <Link href="/book">
-            <Button size="lg">
+          <Link href="/book" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto">
               Book Demo
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <GradientRing>
+          <GradientRing fullWidth>
             <Button
               size="lg"
               variant="secondary"
-              className="border-transparent shadow-none"
+              className="w-full border-transparent shadow-none sm:w-auto"
               onClick={() => {
                 window.dispatchEvent(new CustomEvent("open-ai-assistant"));
               }}
