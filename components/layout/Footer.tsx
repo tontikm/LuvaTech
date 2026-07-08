@@ -38,6 +38,11 @@ export function Footer() {
                 Book Demo
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className="hover:text-white">
+                Privacy Policy
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -59,7 +64,10 @@ export function Footer() {
       </div>
       <div className="border-t border-white/[0.06] px-6 py-6 text-center text-xs text-white/30">
         © {new Date().getFullYear()} {BRAND_NAME}. Built with the same stack we deploy for
-        clients.
+        clients.{" "}
+        <Link href="/privacy" className="hover:text-white/50 underline-offset-2 hover:underline">
+          Privacy Policy
+        </Link>
       </div>
     </footer>
   );

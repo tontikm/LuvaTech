@@ -1,9 +1,27 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/client-server";
+import {
+  checkRateLimit,
+  extractIpFromForwardedHeader,
+} from "@/lib/security/rate-limit";
 
 export async function adminLoginAction(email: string, password: string) {
+  const headerStore = await headers();
+  const ip = extractIpFromForwardedHeader(headerStore.get("x-forwarded-for"));
+  const rateLimit = await checkRateLimit(ip, "adminLogin");
+  if (!rateLimit.success) {
+    return {
+      ok: false,
+      error:
+        rateLimit.status === 429
+          ? "Too many login attempts. Please try again later."
+          : "Login is temporarily unavailable.",
+    };
+  }
+
   const client = await createSupabaseServerClient();
   if (!client) {
     if (

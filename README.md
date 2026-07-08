@@ -113,6 +113,23 @@ npm run test:chatbot
 npm run apis:smoke
 ```
 
+## Security
+
+Production APIs are rate-limited when Upstash Redis is configured:
+
+| Variable | Purpose |
+|----------|---------|
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis REST URL (rate limits + action caps) |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis REST token |
+
+Create a free database at [upstash.com](https://upstash.com), add both vars to Vercel Production, then run `npm run sync:vercel-env`.
+
+Without Upstash in production, rate-limited routes return **503** so misconfiguration is visible.
+
+**Supabase:** disable public sign-up in Authentication → Providers unless you need it. Admin users are created via `npm run admin:setup`.
+
+Security headers (CSP, HSTS, frame deny) are set in [`next.config.ts`](next.config.ts).
+
 ## Ports
 
 | Project | Port |

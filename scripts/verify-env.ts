@@ -11,7 +11,12 @@ const required = [
   "DIRECT_URL",
 ] as const;
 
-const optional = ["OPENAI_API_KEY", "RESEND_API_KEY"] as const;
+const optional = [
+  "OPENAI_API_KEY",
+  "RESEND_API_KEY",
+  "UPSTASH_REDIS_REST_URL",
+  "UPSTASH_REDIS_REST_TOKEN",
+] as const;
 
 function loadEnv() {
   const fs = require("fs");
@@ -67,6 +72,10 @@ for (const key of optional) {
   } else {
     console.log(`✓ ${key}`);
   }
+}
+
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  console.log("\n○ Rate limiting disabled — set UPSTASH_REDIS_* for production hardening");
 }
 
 if (failed) {

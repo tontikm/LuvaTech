@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Calendar, Check, Loader2 } from "lucide-react";
 import { Button, GlassCard } from "@/components/ui";
@@ -230,6 +231,14 @@ export function BookingForm() {
           </>
         )}
       </Button>
+
+      <p className="text-xs leading-relaxed text-white/40">
+        By submitting this form, you agree to our{" "}
+        <Link href="/privacy" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+          Privacy Policy
+        </Link>
+        . We use your details to confirm your consultation and follow up about your enquiry.
+      </p>
     </form>
   );
 }

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { isAdminUser } from "@/lib/admin/is-admin-user";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -45,6 +46,13 @@ export async function middleware(request: NextRequest) {
 
   if (!user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
+  }
+
+  const admin = await isAdminUser(user.id);
+  if (!admin) {
+    const loginUrl = new URL("/admin/login", request.url);
+    loginUrl.searchParams.set("error", "unauthorized");
+    return NextResponse.redirect(loginUrl);
   }
 
   return response;

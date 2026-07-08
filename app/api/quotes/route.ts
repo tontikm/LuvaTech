@@ -3,23 +3,15 @@ import { z } from "zod";
 import { createLead, generateAndSaveQuote } from "@/lib/db/queries";
 import { sendQuoteEmail } from "@/lib/email/templates";
 import { renderQuotationPdf } from "@/lib/pdf/render";
-
-const quoteSchema = z.object({
-  businessName: z.string().min(2),
-  contactName: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  industry: z.string().min(2),
-  employees: z.number().optional(),
-  websiteNeeds: z.string().optional(),
-  automationNeeds: z.string().min(10),
-  budgetRange: z.string().min(2),
-  timeline: z.string().min(2),
-});
+import { enforceRateLimit } from "@/lib/security/rate-limit";
+import { quoteInputSchema } from "@/lib/security/schemas";
 
 export async function POST(req: Request) {
+  const rateLimited = await enforceRateLimit(req, "emailAction");
+  if (rateLimited) return rateLimited;
+
   try {
-    const input = quoteSchema.parse(await req.json());
+    const input = quoteInputSchema.parse(await req.json());
     const lead = await createLead({ ...input, source: "form" });
     const { quote, estimate } = await generateAndSaveQuote(input, lead.id);
 
@@ -47,7 +39,7 @@ export async function POST(req: Request) {
 
     await sendQuoteEmail(quoteData, pdfBuffer);
 
-    return NextResponse.json({ ok: true, quoteNumber, estimate });
+    return NextResponse.json({ ok: true, quoteNumber });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.flatten() }, { status: 400 });

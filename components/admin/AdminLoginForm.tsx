@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { adminLoginAction } from "@/app/admin/actions";
 import { Button, GlassCard } from "@/components/ui";
 
-export function AdminLoginForm() {
+export function AdminLoginForm({ initialError }: { initialError?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError ?? "");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {

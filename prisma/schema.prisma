@@ -91,7 +91,7 @@ model Booking {
   name        String
   email       String
   company     String?
-  scheduledAt DateTime
+  scheduledAt DateTime      @unique
   durationMin Int           @default(30)
   timezone    String        @default("Africa/Johannesburg")
   notes       String?

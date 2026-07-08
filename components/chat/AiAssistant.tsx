@@ -5,6 +5,7 @@ import { DefaultChatTransport } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bot, Calendar, FileText, Send, Sparkles, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button, GradientRing } from "@/components/ui";
 
@@ -152,6 +153,16 @@ export function AiAssistant() {
                       </button>
                     ))}
                   </div>
+                  <p className="text-xs leading-relaxed text-white/35">
+                    Chats may be stored to generate quotes and improve our service. See our{" "}
+                    <Link
+                      href="/privacy"
+                      className="text-white/50 underline-offset-2 hover:text-white/70 hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
                 </div>
               )}
               {messages.map((m) => (

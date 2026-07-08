@@ -1,3 +1,4 @@
+import { SlotTakenError } from "@/lib/db/errors";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import {
@@ -8,6 +9,7 @@ import {
   localGetDashboardStats,
   localTrackEvent,
   localUpsertConversation,
+  readLocalDb,
   type StoredBooking,
   type StoredLead,
   type StoredQuote,
@@ -119,20 +121,37 @@ export async function createBooking(input: {
   leadId?: string;
 }) {
   if (!isDatabaseConfigured()) {
+    const db = readLocalDb();
+    const taken = db.bookings.some(
+      (b) => b.scheduledAt === input.scheduledAt && b.status === "CONFIRMED",
+    );
+    if (taken) throw new SlotTakenError();
     return localCreateBooking(input);
   }
 
-  return prisma.booking.create({
-    data: {
-      name: input.name,
-      email: input.email,
-      company: input.company,
-      scheduledAt: new Date(input.scheduledAt),
-      notes: input.notes,
-      quoteId: input.quoteId,
-      leadId: input.leadId,
-    },
-  });
+  try {
+    return await prisma.booking.create({
+      data: {
+        name: input.name,
+        email: input.email,
+        company: input.company,
+        scheduledAt: new Date(input.scheduledAt),
+        notes: input.notes,
+        quoteId: input.quoteId,
+        leadId: input.leadId,
+      },
+    });
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "code" in err &&
+      (err as { code: string }).code === "P2002"
+    ) {
+      throw new SlotTakenError();
+    }
+    throw err;
+  }
 }
 
 export async function saveConversation(

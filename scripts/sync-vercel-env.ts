@@ -22,7 +22,12 @@ const REQUIRED = [
   "EMAIL_FROM",
 ] as const;
 
-const OPTIONAL = ["OPENAI_API_KEY", "RESEND_API_KEY"] as const;
+const OPTIONAL = [
+  "OPENAI_API_KEY",
+  "RESEND_API_KEY",
+  "UPSTASH_REDIS_REST_URL",
+  "UPSTASH_REDIS_REST_TOKEN",
+] as const;
 
 const PRODUCTION_OVERRIDES: Record<string, string> = {
   ADMIN_DEV_BYPASS: "false",

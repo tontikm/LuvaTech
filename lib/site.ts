@@ -13,3 +13,10 @@ export const SOCIAL = {
   linkedin: "https://linkedin.com/company/luvatech",
   github: "https://github.com/luvatech",
 };
+
+export const LEGAL = {
+  tradingName: "LuvaTech",
+  informationOfficerEmail: CONTACT.email,
+  policyEffectiveDate: "9 July 2026",
+  regulatorUrl: "https://www.justice.gov.za/inforeg/",
+};
