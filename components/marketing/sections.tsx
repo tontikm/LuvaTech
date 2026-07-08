@@ -11,7 +11,7 @@ import {
   Zap,
 } from "lucide-react";
 import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from "@/lib/site";
-import { Button, GlassCard } from "@/components/ui";
+import { Button, GlassCard, GradientRing } from "@/components/ui";
 
 const FEATURES = [
   {
@@ -87,16 +87,19 @@ export function HeroSection() {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent("open-ai-assistant"));
-            }}
-          >
-            <Bot className="h-4 w-4" />
-            Ask a question
-          </Button>
+          <GradientRing>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="border-transparent shadow-none"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("open-ai-assistant"));
+              }}
+            >
+              <Bot className="h-4 w-4" />
+              Ask a question
+            </Button>
+          </GradientRing>
         </motion.div>
       </div>
     </section>

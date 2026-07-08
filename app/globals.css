@@ -96,3 +96,43 @@ h3,
 .animate-pulse-glow {
   animation: pulse-glow 4s ease-in-out infinite;
 }
+
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glow-rotate {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+.gradient-ring {
+  padding: 2px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    rgba(45, 212, 191, 0.95) 12%,
+    rgba(244, 247, 247, 0.35) 18%,
+    transparent 35%
+  );
+  box-shadow: 0 0 32px -8px rgba(45, 212, 191, 0.45);
+  animation: glow-rotate 3.5s linear infinite;
+}
+
+.gradient-ring-inner {
+  border-radius: 9999px;
+  background: #0a0d12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-ring {
+    animation: none;
+    background: transparent;
+    border: 1px solid rgba(45, 212, 191, 0.45);
+    box-shadow: none;
+  }
+}

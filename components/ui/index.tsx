@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export { GradientRing } from "./GradientRing";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
