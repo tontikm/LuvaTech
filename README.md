@@ -87,11 +87,31 @@ npm run admin:setup -- you@email.com "Your Name"
 3. Deploy:
 
 ```bash
-npx vercel link      # once, connect to GitHub repo
-npx vercel --prod    # or enable auto-deploy from main in Vercel dashboard
+npm run sync:vercel-env   # push Supabase vars to Vercel (ADMIN_DEV_BYPASS=false)
+npx vercel link           # once, connect to GitHub repo
+npx vercel --prod         # or enable auto-deploy from main in Vercel dashboard
 ```
 
-4. In Supabase → Authentication → URL Configuration, add your Vercel domain to Redirect URLs.
+**Production:** https://luvatech.vercel.app
+
+4. In Supabase → Authentication → URL Configuration, add these Redirect URLs:
+   - `https://luvatech.vercel.app/**`
+   - `http://localhost:3002/**` (local dev)
+
+### Phase 3 — API keys (last)
+
+Add in Vercel Production (or locally in `.env.local` then `npm run sync:vercel-env`):
+
+- `OPENAI_API_KEY` — AI assistant
+- `RESEND_API_KEY` — quote and booking emails
+
+Smoke-test after keys are set:
+
+```bash
+npm run test:email -- you@email.com
+npm run test:chatbot
+npm run apis:smoke
+```
 
 ## Ports
 

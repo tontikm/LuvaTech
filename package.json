@@ -7,13 +7,17 @@
     "build": "npm run db:sync-env && prisma generate && next build",
     "start": "next start -p 3002",
     "lint": "eslint",
-    "db:sync-env": "cp .env.local .env",
+    "db:sync-env": "test -f .env.local && cp .env.local .env || true",
     "db:generate": "npm run db:sync-env && prisma generate",
     "db:push": "npm run db:sync-env && prisma db push",
     "db:studio": "npm run db:sync-env && prisma studio",
     "env:check": "npx tsx scripts/verify-env.ts",
     "admin:setup": "npm run db:sync-env && npx tsx scripts/setup-admin.ts",
-    "deploy:check": "npm run env:check && npm run build"
+    "deploy:check": "npm run env:check && npm run build",
+    "sync:vercel-env": "npx tsx scripts/sync-vercel-env.ts",
+    "test:email": "npx tsx scripts/test-email.ts",
+    "test:chatbot": "npx tsx scripts/test-chatbot.ts",
+    "apis:smoke": "npm run test:email && npm run test:chatbot"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.8",
