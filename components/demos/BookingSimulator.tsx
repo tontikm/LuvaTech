@@ -1,49 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { DemoShell } from "@/components/demos/DemoShell";
+import { formatDateInSast, isSlotInPast } from "@/lib/booking/slots";
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-] as const;
+const DEMO_TIMES = ["09:00", "10:30", "14:00", "15:30"];
 
-function nextWeekdays(count: number) {
-  const days: { date: string; label: string }[] = [];
-  const cursor = new Date();
-  cursor.setHours(12, 0, 0, 0);
-  while (days.length < count) {
-    cursor.setDate(cursor.getDate() + 1);
-    const dow = cursor.getDay();
-    if (dow === 0 || dow === 6) continue;
-    const y = cursor.getFullYear();
-    const m = String(cursor.getMonth() + 1).padStart(2, "0");
-    const d = String(cursor.getDate()).padStart(2, "0");
-    days.push({
-      date: `${y}-${m}-${d}`,
-      label: `${WEEKDAYS[dow]} ${MONTHS[cursor.getMonth()]} ${cursor.getDate()}`,
-    });
-  }
-  return days;
+function formatDayLabel(dateStr: string): string {
+  return new Date(`${dateStr}T12:00:00+02:00`).toLocaleDateString("en-ZA", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    timeZone: "Africa/Johannesburg",
+  });
 }
 
-const TIMES = ["09:00", "10:30", "14:00", "15:30"];
+function isWeekendInSast(date: Date): boolean {
+  const label = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Africa/Johannesburg",
+    weekday: "short",
+  }).format(date);
+  return label === "Sat" || label === "Sun";
+}
+
+function getDemoDays(times: string[], count: number) {
+  const days: { date: string; label: string }[] = [];
+  const start = new Date();
+
+  for (let offset = 0; days.length < count && offset < count + 14; offset++) {
+    const day = new Date(start);
+    day.setDate(start.getDate() + offset);
+    if (isWeekendInSast(day)) continue;
+
+    const dateStr = formatDateInSast(day);
+    const hasSlot = times.some((time) => !isSlotInPast(dateStr, time));
+    if (!hasSlot) continue;
+
+    days.push({ date: dateStr, label: formatDayLabel(dateStr) });
+  }
+
+  return days;
+}
 
 export function BookingSimulator({ compact }: { compact?: boolean }) {
   const [days, setDays] = useState<{ date: string; label: string }[]>([]);
@@ -51,10 +53,21 @@ export function BookingSimulator({ compact }: { compact?: boolean }) {
   const [time, setTime] = useState("");
 
   useEffect(() => {
-    const next = nextWeekdays(5);
+    const next = getDemoDays(DEMO_TIMES, 5);
     setDays(next);
     setDate(next[0]?.date ?? "");
   }, []);
+
+  const timesForDay = useMemo(
+    () => DEMO_TIMES.filter((slot) => !date || !isSlotInPast(date, slot)),
+    [date],
+  );
+
+  useEffect(() => {
+    if (time && date && isSlotInPast(date, time)) {
+      setTime("");
+    }
+  }, [date, time]);
 
   const hold =
     date && time
@@ -103,7 +116,7 @@ export function BookingSimulator({ compact }: { compact?: boolean }) {
       <div className="mt-4">
         <label className="text-xs uppercase tracking-wider text-white/40">Time</label>
         <div className="mt-1.5 flex flex-wrap gap-2">
-          {TIMES.map((slot) => (
+          {timesForDay.map((slot) => (
             <button
               key={slot}
               type="button"

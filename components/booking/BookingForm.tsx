@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Check, Loader2 } from "lucide-react";
 import { Button, GlassCard } from "@/components/ui";
+import { CONTACT } from "@/lib/site";
 import { isSlotInPast } from "@/lib/booking/slots";
 
 type SlotDay = { date: string; slots: string[] };
@@ -17,6 +18,7 @@ export function BookingForm() {
   const [company, setCompany] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [slotsLoaded, setSlotsLoaded] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,9 +29,12 @@ export function BookingForm() {
       try {
         const res = await fetch("/api/bookings");
         const d = await res.json();
-        if (!cancelled) setSlots(d.slots ?? []);
+        if (!cancelled) {
+          setSlots(d.slots ?? []);
+          setSlotsLoaded(true);
+        }
       } catch {
-        /* ignore */
+        if (!cancelled) setSlotsLoaded(true);
       }
     }
 
@@ -62,10 +67,13 @@ export function BookingForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, company, date: selectedDate, time: selectedTime, notes }),
       });
-      if (!res.ok) throw new Error("Booking failed");
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error ?? "Could not complete booking. Please try again.");
+      }
       setSuccess(true);
-    } catch {
-      setError("Could not complete booking. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not complete booking. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -83,12 +91,35 @@ export function BookingForm() {
     );
   }
 
+  if (slotsLoaded && slots.length === 0) {
+    return (
+      <GlassCard className="text-center">
+        <Calendar className="mx-auto h-10 w-10 text-white/30" />
+        <h2 className="mt-4 text-lg font-semibold">No slots available right now</h2>
+        <p className="mt-2 text-sm text-white/50">
+          Check back tomorrow or email us at{" "}
+          <a href={`mailto:${CONTACT.email}`} className="text-accent hover:underline">
+            {CONTACT.email}
+          </a>
+          .
+        </p>
+      </GlassCard>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="text-sm text-white/50">Select date</label>
         <div className="mt-2 flex flex-wrap gap-2">
-          {slots.map((day) => (
+          {!slotsLoaded
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="h-10 w-24 animate-pulse rounded-lg border border-white/10 bg-white/[0.03]"
+                />
+              ))
+            : slots.map((day) => (
             <button
               key={day.date}
               type="button"
@@ -116,6 +147,11 @@ export function BookingForm() {
       {selectedDate && (
         <div>
           <label className="text-sm text-white/50">Select time (SAST)</label>
+          {daySlots.length === 0 ? (
+            <p className="mt-2 text-sm text-white/45">
+              No times left on this date. Please choose another day.
+            </p>
+          ) : (
           <div className="mt-2 flex flex-wrap gap-2">
             {daySlots.map((time) => (
               <button
@@ -132,6 +168,7 @@ export function BookingForm() {
               </button>
             ))}
           </div>
+          )}
         </div>
       )}
 
