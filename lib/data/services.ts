@@ -45,28 +45,27 @@ export const SERVICES: Service[] = [
       "Multi-language and regional deployments",
     ],
     techStack: ["Next.js", "React", "Tailwind CSS", "Vercel", "Supabase"],
-    startingFrom: 18000,
-    timeline: "2 to 8 weeks",
+    startingFrom: 2500,
+    timeline: "2 days to 8 weeks",
     icon: "Globe",
     packages: [
       {
         name: "Landing",
-        price: 18000,
-        timeline: "2 to 3 weeks",
-        description: "A focused single-page site with lead capture.",
+        price: 2500,
+        timeline: "2 to 5 days",
+        description: "A simple single-page site to get your business online.",
         includes: [
-          "One high-converting landing page",
-          "Responsive design and SEO basics",
+          "One mobile-responsive page",
           "Contact or lead capture form",
-          "Analytics setup",
+          "Basic SEO setup",
           "Production deploy on Vercel",
         ],
         tier: "amber",
       },
       {
         name: "Starter",
-        price: 28000,
-        timeline: "3 to 5 weeks",
+        price: 6500,
+        timeline: "1 to 2 weeks",
         description: "A polished marketing site for growing businesses.",
         includes: [
           "Up to 4 custom pages",
@@ -79,8 +78,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Growth",
-        price: 52000,
-        timeline: "5 to 7 weeks",
+        price: 14500,
+        timeline: "2 to 3 weeks",
         description: "A conversion-focused site with deeper lead workflows.",
         includes: [
           "Up to 8 custom pages",
@@ -94,8 +93,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Business",
-        price: 78000,
-        timeline: "6 to 9 weeks",
+        price: 28000,
+        timeline: "3 to 5 weeks",
         description: "CMS-powered site with content workflows and integrations.",
         includes: [
           "Everything in Growth",
@@ -108,8 +107,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Platform",
-        price: 105000,
-        timeline: "8 to 12 weeks",
+        price: 48000,
+        timeline: "5 to 8 weeks",
         description: "Full web product experiences for multi-role or logged-in users.",
         includes: [
           "Everything in Business",
@@ -140,14 +139,14 @@ export const SERVICES: Service[] = [
       "Human escalation workflows",
     ],
     techStack: ["OpenAI", "Vercel AI SDK", "Supabase", "Resend"],
-    startingFrom: 18000,
-    timeline: "2 to 4 weeks",
+    startingFrom: 5500,
+    timeline: "3 days to 6 weeks",
     icon: "MessageSquare",
     packages: [
       {
         name: "FAQ Bot",
-        price: 18000,
-        timeline: "1 to 2 weeks",
+        price: 5500,
+        timeline: "3 to 5 days",
         description: "A lightweight assistant for common questions and lead capture.",
         includes: [
           "Floating chat widget",
@@ -160,8 +159,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Starter Bot",
-        price: 28000,
-        timeline: "2 to 3 weeks",
+        price: 9500,
+        timeline: "1 to 2 weeks",
         description: "A website assistant trained on your FAQs and services.",
         includes: [
           "Everything in FAQ Bot",
@@ -174,8 +173,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Sales Assistant",
-        price: 55000,
-        timeline: "3 to 5 weeks",
+        price: 18500,
+        timeline: "2 to 3 weeks",
         description: "An AI that qualifies leads, estimates pricing, and books demos.",
         includes: [
           "Everything in Starter Bot",
@@ -189,8 +188,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Omni Channel",
-        price: 95000,
-        timeline: "5 to 8 weeks",
+        price: 35000,
+        timeline: "4 to 6 weeks",
         description: "Assistants across web and WhatsApp with shared memory and analytics.",
         includes: [
           "Everything in Sales Assistant",
@@ -221,14 +220,14 @@ export const SERVICES: Service[] = [
       "Scheduled jobs and event-driven triggers",
     ],
     techStack: ["Node.js", "PostgreSQL", "REST APIs", "Webhooks"],
-    startingFrom: 22000,
-    timeline: "2 to 6 weeks",
+    startingFrom: 6500,
+    timeline: "3 days to 8 weeks",
     icon: "Workflow",
     packages: [
       {
         name: "Quick Win",
-        price: 22000,
-        timeline: "2 to 3 weeks",
+        price: 6500,
+        timeline: "3 to 5 days",
         description: "Automate one repetitive task with immediate time savings.",
         includes: [
           "Process discovery call",
@@ -241,8 +240,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Single Flow",
-        price: 35000,
-        timeline: "3 to 4 weeks",
+        price: 9500,
+        timeline: "1 to 2 weeks",
         description: "One high-impact process automated end to end.",
         includes: [
           "Process discovery workshop",
@@ -255,8 +254,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Ops Suite",
-        price: 72000,
-        timeline: "5 to 7 weeks",
+        price: 22000,
+        timeline: "3 to 4 weeks",
         description: "Multiple connected workflows across teams and tools.",
         includes: [
           "Everything in Single Flow",
@@ -270,8 +269,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Enterprise Ops",
-        price: 130000,
-        timeline: "8 to 12 weeks",
+        price: 45000,
+        timeline: "6 to 8 weeks",
         description: "Department-wide automation with audit trails and controls.",
         includes: [
           "Everything in Ops Suite",
@@ -302,14 +301,14 @@ export const SERVICES: Service[] = [
       "Email and calendar sync",
     ],
     techStack: ["Next.js", "Supabase", "Prisma", "PostgreSQL"],
-    startingFrom: 38000,
-    timeline: "5 to 10 weeks",
+    startingFrom: 12000,
+    timeline: "2 to 8 weeks",
     icon: "Users",
     packages: [
       {
         name: "Lite CRM",
-        price: 38000,
-        timeline: "5 to 6 weeks",
+        price: 12000,
+        timeline: "2 to 3 weeks",
         description: "Essential lead tracking for small sales teams.",
         includes: [
           "Lead and contact records",
@@ -322,8 +321,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Pipeline",
-        price: 48000,
-        timeline: "6 to 7 weeks",
+        price: 18000,
+        timeline: "3 to 4 weeks",
         description: "A clean CRM for leads, deals, and follow-ups.",
         includes: [
           "Lead and deal pipeline",
@@ -336,8 +335,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Revenue CRM",
-        price: 82000,
-        timeline: "8 to 10 weeks",
+        price: 32000,
+        timeline: "4 to 6 weeks",
         description: "Sales CRM with scoring, forecasts, and automation.",
         includes: [
           "Everything in Pipeline",
@@ -351,8 +350,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Full Stack CRM",
-        price: 145000,
-        timeline: "10 to 14 weeks",
+        price: 55000,
+        timeline: "6 to 8 weeks",
         description: "CRM plus customer success and service workflows.",
         includes: [
           "Everything in Revenue CRM",
@@ -383,14 +382,14 @@ export const SERVICES: Service[] = [
       "Embedded reporting for executives",
     ],
     techStack: ["React", "PostgreSQL", "Chart libraries", "Auth"],
-    startingFrom: 32000,
-    timeline: "4 to 8 weeks",
+    startingFrom: 8500,
+    timeline: "1 to 6 weeks",
     icon: "LayoutDashboard",
     packages: [
       {
         name: "Starter Board",
-        price: 32000,
-        timeline: "4 to 5 weeks",
+        price: 8500,
+        timeline: "1 to 2 weeks",
         description: "A simple dashboard for your top metrics.",
         includes: [
           "Up to 4 KPI widgets",
@@ -403,8 +402,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "KPI Board",
-        price: 42000,
-        timeline: "5 to 6 weeks",
+        price: 14500,
+        timeline: "2 to 3 weeks",
         description: "A focused dashboard for your most important metrics.",
         includes: [
           "Up to 8 KPI widgets",
@@ -417,8 +416,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Ops Control",
-        price: 78000,
-        timeline: "6 to 8 weeks",
+        price: 28000,
+        timeline: "3 to 5 weeks",
         description: "Multi-team dashboards with alerts and saved views.",
         includes: [
           "Everything in KPI Board",
@@ -432,8 +431,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Executive Suite",
-        price: 120000,
-        timeline: "8 to 12 weeks",
+        price: 48000,
+        timeline: "5 to 6 weeks",
         description: "Company-wide reporting with department drill-downs.",
         includes: [
           "Everything in Ops Control",
@@ -464,14 +463,14 @@ export const SERVICES: Service[] = [
       "Waitlists and rescheduling",
     ],
     techStack: ["Next.js", "PostgreSQL", "Calendar APIs", "Resend"],
-    startingFrom: 18000,
-    timeline: "2 to 5 weeks",
+    startingFrom: 4500,
+    timeline: "3 days to 6 weeks",
     icon: "Calendar",
     packages: [
       {
         name: "Basic Book",
-        price: 18000,
-        timeline: "2 to 3 weeks",
+        price: 4500,
+        timeline: "3 to 5 days",
         description: "Simple online booking for a single calendar.",
         includes: [
           "Public booking page",
@@ -484,8 +483,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Solo Book",
-        price: 25000,
-        timeline: "3 to 4 weeks",
+        price: 8500,
+        timeline: "1 to 2 weeks",
         description: "Self-serve bookings for a single provider or team.",
         includes: [
           "Everything in Basic Book",
@@ -498,8 +497,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Team Book",
-        price: 48000,
-        timeline: "4 to 6 weeks",
+        price: 16500,
+        timeline: "2 to 3 weeks",
         description: "Multi-staff booking with routing and reminders.",
         includes: [
           "Everything in Solo Book",
@@ -513,8 +512,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Network Book",
-        price: 85000,
-        timeline: "6 to 9 weeks",
+        price: 32000,
+        timeline: "4 to 6 weeks",
         description: "Multi-location scheduling with waitlists and rescheduling.",
         includes: [
           "Everything in Team Book",
@@ -545,14 +544,14 @@ export const SERVICES: Service[] = [
       "CRM and accounting integrations",
     ],
     techStack: ["React PDF", "PostgreSQL", "Resend", "OpenAI"],
-    startingFrom: 22000,
-    timeline: "2 to 6 weeks",
+    startingFrom: 5500,
+    timeline: "3 days to 6 weeks",
     icon: "FileText",
     packages: [
       {
         name: "Quote Starter",
-        price: 22000,
-        timeline: "2 to 3 weeks",
+        price: 5500,
+        timeline: "3 to 5 days",
         description: "Simple quote form with branded PDF output.",
         includes: [
           "Guided quote form",
@@ -565,8 +564,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Quote Lite",
-        price: 28000,
-        timeline: "3 to 4 weeks",
+        price: 9500,
+        timeline: "1 to 2 weeks",
         description: "Branded quote builder with flexible pricing rules.",
         includes: [
           "Everything in Quote Starter",
@@ -579,8 +578,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Sales Quotes",
-        price: 58000,
-        timeline: "4 to 6 weeks",
+        price: 18500,
+        timeline: "2 to 3 weeks",
         description: "Package rules, approvals, and CRM tracking.",
         includes: [
           "Everything in Quote Lite",
@@ -594,8 +593,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Proposal Engine",
-        price: 105000,
-        timeline: "6 to 10 weeks",
+        price: 38000,
+        timeline: "4 to 6 weeks",
         description: "AI-assisted proposals with versioning and signatures.",
         includes: [
           "Everything in Sales Quotes",
@@ -626,14 +625,14 @@ export const SERVICES: Service[] = [
       "Integration health dashboards",
     ],
     techStack: ["Node.js", "PostgreSQL", "Redis", "Webhooks"],
-    startingFrom: 15000,
-    timeline: "1 to 4 weeks",
+    startingFrom: 3500,
+    timeline: "2 days to 5 weeks",
     icon: "Plug",
     packages: [
       {
         name: "Webhook",
-        price: 15000,
-        timeline: "1 to 2 weeks",
+        price: 3500,
+        timeline: "2 to 3 days",
         description: "Receive or send events between two systems.",
         includes: [
           "One webhook endpoint or listener",
@@ -646,8 +645,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "One Connect",
-        price: 22000,
-        timeline: "2 to 3 weeks",
+        price: 6500,
+        timeline: "3 to 5 days",
         description: "A reliable sync between two systems.",
         includes: [
           "One primary integration",
@@ -660,8 +659,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Hub Sync",
-        price: 48000,
-        timeline: "3 to 5 weeks",
+        price: 14500,
+        timeline: "1 to 2 weeks",
         description: "Multiple integrations with monitoring.",
         includes: [
           "Everything in One Connect",
@@ -675,8 +674,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Platform Glue",
-        price: 88000,
-        timeline: "5 to 8 weeks",
+        price: 32000,
+        timeline: "3 to 5 weeks",
         description: "Enterprise-grade middleware with observability.",
         includes: [
           "Everything in Hub Sync",
@@ -707,14 +706,14 @@ export const SERVICES: Service[] = [
       "Uptime monitoring and alerting",
     ],
     techStack: ["Vercel", "AWS", "Supabase", "GitHub Actions"],
-    startingFrom: 12000,
-    timeline: "1 to 3 weeks",
+    startingFrom: 2000,
+    timeline: "1 day to 4 weeks",
     icon: "Cloud",
     packages: [
       {
         name: "Essentials",
-        price: 12000,
-        timeline: "1 week",
+        price: 2000,
+        timeline: "1 to 2 days",
         description: "Get your app live with domain and SSL configured.",
         includes: [
           "Vercel production setup",
@@ -727,8 +726,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Launch Stack",
-        price: 18000,
-        timeline: "1 to 2 weeks",
+        price: 4500,
+        timeline: "3 to 5 days",
         description: "Production-ready hosting for a new Next.js app.",
         includes: [
           "Everything in Essentials",
@@ -741,8 +740,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Pro Ops",
-        price: 38000,
-        timeline: "2 to 4 weeks",
+        price: 12000,
+        timeline: "1 to 2 weeks",
         description: "Staging, CI/CD, and backups for growing products.",
         includes: [
           "Everything in Launch Stack",
@@ -756,8 +755,8 @@ export const SERVICES: Service[] = [
       },
       {
         name: "Scale Cloud",
-        price: 75000,
-        timeline: "4 to 6 weeks",
+        price: 28000,
+        timeline: "3 to 4 weeks",
         description: "Hardened multi-env infrastructure with observability.",
         includes: [
           "Everything in Pro Ops",

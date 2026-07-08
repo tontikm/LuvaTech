@@ -21,15 +21,15 @@ export type QuoteEstimate = {
 };
 
 const BASE_PACKAGES: Record<string, number> = {
-  "website-development": 18000,
-  "ai-chatbots": 18000,
-  "business-automation": 22000,
-  "crm-systems": 38000,
-  "internal-dashboards": 32000,
-  "appointment-systems": 18000,
-  "quotation-systems": 22000,
-  "api-integrations": 15000,
-  "cloud-solutions": 12000,
+  "website-development": 2500,
+  "ai-chatbots": 5500,
+  "business-automation": 6500,
+  "crm-systems": 12000,
+  "internal-dashboards": 8500,
+  "appointment-systems": 4500,
+  "quotation-systems": 5500,
+  "api-integrations": 3500,
+  "cloud-solutions": 2000,
 };
 
 function detectServices(input: QuoteInput): string[] {
