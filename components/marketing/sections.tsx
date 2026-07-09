@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from "@/lib/site";
 import { Button, GlassCard, GradientRing } from "@/components/ui";
+import { QuoteCalculator } from "@/components/demos/QuoteCalculator";
+import { ClientOnly } from "@/components/demos/ClientOnly";
 
 const FEATURES = [
   {
@@ -44,63 +46,83 @@ export function HeroSection() {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-x-hidden">
       <div className="absolute inset-0 grid-bg" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(45,212,191,0.18),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_30%_-10%,rgba(45,212,191,0.18),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_40%,rgba(45,212,191,0.08),transparent_60%)]" />
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
       <div className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-28">
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="font-display text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl"
-        >
-          <span className="gradient-text">{BRAND_NAME}</span>
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.12 }}
-          className="mt-6 max-w-2xl font-display text-2xl font-semibold tracking-tight text-white/90 sm:text-3xl lg:text-4xl"
-        >
-          {BRAND_TAGLINE}
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.22 }}
-          className="mt-5 max-w-xl text-base leading-relaxed text-white/50 sm:text-lg"
-        >
-          {BRAND_DESCRIPTION}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.32 }}
-          className="mt-10 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center"
-        >
-          <Link href="/book" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full sm:w-auto">
-              Book Demo
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <GradientRing fullWidth>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="w-full border-transparent shadow-none sm:w-auto"
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent("open-ai-assistant"));
-              }}
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="font-display text-5xl font-bold tracking-tight sm:text-7xl lg:text-7xl xl:text-8xl"
             >
-              <Bot className="h-4 w-4" />
-              Ask a question
-            </Button>
-          </GradientRing>
-        </motion.div>
+              <span className="gradient-text">{BRAND_NAME}</span>
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.12 }}
+              className="mt-6 max-w-2xl font-display text-2xl font-semibold tracking-tight text-white/90 sm:text-3xl lg:text-4xl"
+            >
+              {BRAND_TAGLINE}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.22 }}
+              className="mt-5 max-w-xl text-base leading-relaxed text-white/50 sm:text-lg"
+            >
+              {BRAND_DESCRIPTION}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.32 }}
+              className="mt-10 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center"
+            >
+              <Link href="/book" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Book Demo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <GradientRing fullWidth>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="w-full border-transparent shadow-none sm:w-auto"
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent("open-ai-assistant"));
+                  }}
+                >
+                  <Bot className="h-4 w-4" />
+                  Ask a question
+                </Button>
+              </GradientRing>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="hidden lg:block"
+          >
+            <ClientOnly
+              fallback={
+                <div className="h-[380px] animate-pulse rounded-2xl border border-white/10 bg-[#080b0f]" />
+              }
+            >
+              <QuoteCalculator compact />
+            </ClientOnly>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
