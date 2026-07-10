@@ -42,12 +42,12 @@ const FEATURES = [
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[100svh] items-start overflow-x-hidden">
+    <section className="relative overflow-x-hidden">
       <div className="absolute inset-0 grid-bg" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(45,212,191,0.18),transparent_55%)]" />
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
 
-      <div className="relative mx-auto w-full max-w-6xl px-6 pb-24 pt-24">
+      <div className="relative mx-auto w-full max-w-6xl px-6 pb-12 pt-20 sm:pb-16 sm:pt-24">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
