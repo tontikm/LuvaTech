@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { SERVICES } from "@/lib/data/services";
-import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
+import { SERVICES, getServiceMonthlyStartingFrom } from "@/lib/data/services";
 import { GlassCard, Badge } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
 
@@ -17,12 +16,13 @@ export default function ServicesPage() {
         </h1>
         <p className="mt-6 max-w-xl text-lg text-white/50 leading-relaxed">
           Each service is delivered with the same architecture, testing, and deployment
-          standards you see running on this website.
+          standards you see running on this website. Pay once-off or choose a managed monthly
+          subscription.
         </p>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2">
           {SERVICES.map((service) => {
-            const careFrom = getCarePlanStartingFrom(service.slug);
+            const monthlyFrom = getServiceMonthlyStartingFrom(service.slug);
             return (
             <Link key={service.slug} href={`/services/${service.slug}`}>
               <GlassCard className="h-full hover:border-white/15 transition-all group">
@@ -35,9 +35,9 @@ export default function ServicesPage() {
                   {service.headline}
                 </p>
                 <p className="mt-6 text-sm text-white/30">
-                  Build from {formatCurrency(service.startingFrom)}
-                  {careFrom != null && (
-                    <> · Care from {formatCurrency(careFrom)}/mo</>
+                  Once-off from {formatCurrency(service.startingFrom)}
+                  {monthlyFrom != null && (
+                    <> · or from {formatCurrency(monthlyFrom)}/mo</>
                   )}
                 </p>
               </GlassCard>

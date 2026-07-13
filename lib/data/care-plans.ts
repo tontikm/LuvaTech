@@ -99,3 +99,15 @@ export function getGlobalCareStartingFrom(): number {
   const essentials = Object.values(SERVICE_CARE_PRICES).map((p) => p.essential);
   return Math.min(...essentials);
 }
+
+/** Included with managed monthly subscriptions (Essential-level care). */
+export const MANAGED_SUB_INCLUDES = [
+  "Hosting and uptime monitoring",
+  "Security and dependency updates",
+  "Monthly health check-in",
+  "Email support (48-hour response)",
+] as const;
+
+export function getManagedSubIncludes(): string[] {
+  return [...MANAGED_SUB_INCLUDES];
+}

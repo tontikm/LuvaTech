@@ -35,7 +35,9 @@ export function CarePlanCard({ plan }: CarePlanCardProps) {
         {formatCurrency(plan.monthlyPrice)}
         <span className="ml-1 text-sm font-normal text-white/40">/mo</span>
       </p>
-      <p className="mt-1 text-xs text-white/40">Billed monthly · cancel anytime</p>
+      <p className="mt-1 text-xs text-white/40">
+        Once-off ownership · billed monthly · cancel anytime
+      </p>
       <ul className="mt-5 flex-1 space-y-2">
         {plan.includes.map((item) => (
           <li key={item} className="flex gap-2 text-sm text-white/60">

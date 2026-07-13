@@ -3,6 +3,8 @@ export type PackageTier = "teal" | "sky" | "violet" | "amber" | "rose";
 export type ServicePackage = {
   name: string;
   price: number;
+  /** Managed subscription (Essential care included). Roughly once-off / 10. */
+  monthlyPrice: number;
   timeline: string;
   description: string;
   includes: string[];
@@ -52,6 +54,7 @@ export const SERVICES: Service[] = [
       {
         name: "Landing",
         price: 2500,
+        monthlyPrice: 250,
         timeline: "2 to 5 days",
         description: "A simple single-page site to get your business online.",
         includes: [
@@ -65,6 +68,7 @@ export const SERVICES: Service[] = [
       {
         name: "Starter",
         price: 6500,
+        monthlyPrice: 650,
         timeline: "1 to 2 weeks",
         description: "A polished marketing site for growing businesses.",
         includes: [
@@ -79,6 +83,7 @@ export const SERVICES: Service[] = [
       {
         name: "Growth",
         price: 14500,
+        monthlyPrice: 1450,
         timeline: "2 to 3 weeks",
         description: "A conversion-focused site with deeper lead workflows.",
         includes: [
@@ -94,6 +99,7 @@ export const SERVICES: Service[] = [
       {
         name: "Business",
         price: 28000,
+        monthlyPrice: 2800,
         timeline: "3 to 5 weeks",
         description: "CMS-powered site with content workflows and integrations.",
         includes: [
@@ -108,6 +114,7 @@ export const SERVICES: Service[] = [
       {
         name: "Platform",
         price: 48000,
+        monthlyPrice: 4800,
         timeline: "5 to 8 weeks",
         description: "Full web product experiences for multi-role or logged-in users.",
         includes: [
@@ -146,6 +153,7 @@ export const SERVICES: Service[] = [
       {
         name: "FAQ Bot",
         price: 5500,
+        monthlyPrice: 550,
         timeline: "3 to 5 days",
         description: "A lightweight assistant for common questions and lead capture.",
         includes: [
@@ -160,6 +168,7 @@ export const SERVICES: Service[] = [
       {
         name: "Starter Bot",
         price: 9500,
+        monthlyPrice: 950,
         timeline: "1 to 2 weeks",
         description: "A website assistant trained on your FAQs and services.",
         includes: [
@@ -174,6 +183,7 @@ export const SERVICES: Service[] = [
       {
         name: "Sales Assistant",
         price: 18500,
+        monthlyPrice: 1850,
         timeline: "2 to 3 weeks",
         description: "An AI that qualifies leads, estimates pricing, and books demos.",
         includes: [
@@ -189,6 +199,7 @@ export const SERVICES: Service[] = [
       {
         name: "Omni Channel",
         price: 35000,
+        monthlyPrice: 3500,
         timeline: "4 to 6 weeks",
         description: "Assistants across web and WhatsApp with shared memory and analytics.",
         includes: [
@@ -227,6 +238,7 @@ export const SERVICES: Service[] = [
       {
         name: "Quick Win",
         price: 6500,
+        monthlyPrice: 650,
         timeline: "3 to 5 days",
         description: "Automate one repetitive task with immediate time savings.",
         includes: [
@@ -241,6 +253,7 @@ export const SERVICES: Service[] = [
       {
         name: "Single Flow",
         price: 9500,
+        monthlyPrice: 950,
         timeline: "1 to 2 weeks",
         description: "One high-impact process automated end to end.",
         includes: [
@@ -255,6 +268,7 @@ export const SERVICES: Service[] = [
       {
         name: "Ops Suite",
         price: 22000,
+        monthlyPrice: 2200,
         timeline: "3 to 4 weeks",
         description: "Multiple connected workflows across teams and tools.",
         includes: [
@@ -270,6 +284,7 @@ export const SERVICES: Service[] = [
       {
         name: "Enterprise Ops",
         price: 45000,
+        monthlyPrice: 4500,
         timeline: "6 to 8 weeks",
         description: "Department-wide automation with audit trails and controls.",
         includes: [
@@ -308,6 +323,7 @@ export const SERVICES: Service[] = [
       {
         name: "Lite CRM",
         price: 12000,
+        monthlyPrice: 1200,
         timeline: "2 to 3 weeks",
         description: "Essential lead tracking for small sales teams.",
         includes: [
@@ -322,6 +338,7 @@ export const SERVICES: Service[] = [
       {
         name: "Pipeline",
         price: 18000,
+        monthlyPrice: 1800,
         timeline: "3 to 4 weeks",
         description: "A clean CRM for leads, deals, and follow-ups.",
         includes: [
@@ -336,6 +353,7 @@ export const SERVICES: Service[] = [
       {
         name: "Revenue CRM",
         price: 32000,
+        monthlyPrice: 3200,
         timeline: "4 to 6 weeks",
         description: "Sales CRM with scoring, forecasts, and automation.",
         includes: [
@@ -351,6 +369,7 @@ export const SERVICES: Service[] = [
       {
         name: "Full Stack CRM",
         price: 55000,
+        monthlyPrice: 5500,
         timeline: "6 to 8 weeks",
         description: "CRM plus customer success and service workflows.",
         includes: [
@@ -389,6 +408,7 @@ export const SERVICES: Service[] = [
       {
         name: "Starter Board",
         price: 8500,
+        monthlyPrice: 850,
         timeline: "1 to 2 weeks",
         description: "A simple dashboard for your top metrics.",
         includes: [
@@ -403,6 +423,7 @@ export const SERVICES: Service[] = [
       {
         name: "KPI Board",
         price: 14500,
+        monthlyPrice: 1450,
         timeline: "2 to 3 weeks",
         description: "A focused dashboard for your most important metrics.",
         includes: [
@@ -417,6 +438,7 @@ export const SERVICES: Service[] = [
       {
         name: "Ops Control",
         price: 28000,
+        monthlyPrice: 2800,
         timeline: "3 to 5 weeks",
         description: "Multi-team dashboards with alerts and saved views.",
         includes: [
@@ -432,6 +454,7 @@ export const SERVICES: Service[] = [
       {
         name: "Executive Suite",
         price: 48000,
+        monthlyPrice: 4800,
         timeline: "5 to 6 weeks",
         description: "Company-wide reporting with department drill-downs.",
         includes: [
@@ -470,6 +493,7 @@ export const SERVICES: Service[] = [
       {
         name: "Basic Book",
         price: 4500,
+        monthlyPrice: 450,
         timeline: "3 to 5 days",
         description: "Simple online booking for a single calendar.",
         includes: [
@@ -484,6 +508,7 @@ export const SERVICES: Service[] = [
       {
         name: "Solo Book",
         price: 8500,
+        monthlyPrice: 850,
         timeline: "1 to 2 weeks",
         description: "Self-serve bookings for a single provider or team.",
         includes: [
@@ -498,6 +523,7 @@ export const SERVICES: Service[] = [
       {
         name: "Team Book",
         price: 16500,
+        monthlyPrice: 1650,
         timeline: "2 to 3 weeks",
         description: "Multi-staff booking with routing and reminders.",
         includes: [
@@ -513,6 +539,7 @@ export const SERVICES: Service[] = [
       {
         name: "Network Book",
         price: 32000,
+        monthlyPrice: 3200,
         timeline: "4 to 6 weeks",
         description: "Multi-location scheduling with waitlists and rescheduling.",
         includes: [
@@ -551,6 +578,7 @@ export const SERVICES: Service[] = [
       {
         name: "Quote Starter",
         price: 5500,
+        monthlyPrice: 550,
         timeline: "3 to 5 days",
         description: "Simple quote form with branded PDF output.",
         includes: [
@@ -565,6 +593,7 @@ export const SERVICES: Service[] = [
       {
         name: "Quote Lite",
         price: 9500,
+        monthlyPrice: 950,
         timeline: "1 to 2 weeks",
         description: "Branded quote builder with flexible pricing rules.",
         includes: [
@@ -579,6 +608,7 @@ export const SERVICES: Service[] = [
       {
         name: "Sales Quotes",
         price: 18500,
+        monthlyPrice: 1850,
         timeline: "2 to 3 weeks",
         description: "Package rules, approvals, and CRM tracking.",
         includes: [
@@ -594,6 +624,7 @@ export const SERVICES: Service[] = [
       {
         name: "Proposal Engine",
         price: 38000,
+        monthlyPrice: 3800,
         timeline: "4 to 6 weeks",
         description: "AI-assisted proposals with versioning and signatures.",
         includes: [
@@ -632,6 +663,7 @@ export const SERVICES: Service[] = [
       {
         name: "Webhook",
         price: 3500,
+        monthlyPrice: 350,
         timeline: "2 to 3 days",
         description: "Receive or send events between two systems.",
         includes: [
@@ -646,6 +678,7 @@ export const SERVICES: Service[] = [
       {
         name: "One Connect",
         price: 6500,
+        monthlyPrice: 650,
         timeline: "3 to 5 days",
         description: "A reliable sync between two systems.",
         includes: [
@@ -660,6 +693,7 @@ export const SERVICES: Service[] = [
       {
         name: "Hub Sync",
         price: 14500,
+        monthlyPrice: 1450,
         timeline: "1 to 2 weeks",
         description: "Multiple integrations with monitoring.",
         includes: [
@@ -675,6 +709,7 @@ export const SERVICES: Service[] = [
       {
         name: "Platform Glue",
         price: 32000,
+        monthlyPrice: 3200,
         timeline: "3 to 5 weeks",
         description: "Enterprise-grade middleware with observability.",
         includes: [
@@ -713,6 +748,7 @@ export const SERVICES: Service[] = [
       {
         name: "Essentials",
         price: 2000,
+        monthlyPrice: 250,
         timeline: "1 to 2 days",
         description: "Get your app live with domain and SSL configured.",
         includes: [
@@ -727,6 +763,7 @@ export const SERVICES: Service[] = [
       {
         name: "Launch Stack",
         price: 4500,
+        monthlyPrice: 450,
         timeline: "3 to 5 days",
         description: "Production-ready hosting for a new Next.js app.",
         includes: [
@@ -741,6 +778,7 @@ export const SERVICES: Service[] = [
       {
         name: "Pro Ops",
         price: 12000,
+        monthlyPrice: 1200,
         timeline: "1 to 2 weeks",
         description: "Staging, CI/CD, and backups for growing products.",
         includes: [
@@ -756,6 +794,7 @@ export const SERVICES: Service[] = [
       {
         name: "Scale Cloud",
         price: 28000,
+        monthlyPrice: 2800,
         timeline: "3 to 4 weeks",
         description: "Hardened multi-env infrastructure with observability.",
         includes: [
@@ -771,6 +810,22 @@ export const SERVICES: Service[] = [
   },
 ];
 
+export type BillingMode = "once-off" | "monthly";
+
 export function getService(slug: string): Service | undefined {
   return SERVICES.find((s) => s.slug === slug);
+}
+
+/** Lowest managed monthly price across packages for a service. */
+export function getServiceMonthlyStartingFrom(slug: string): number | null {
+  const service = getService(slug);
+  if (!service?.packages.length) return null;
+  return Math.min(...service.packages.map((p) => p.monthlyPrice));
+}
+
+export function getPackageBillingAmount(
+  pkg: ServicePackage,
+  mode: BillingMode,
+): number {
+  return mode === "monthly" ? pkg.monthlyPrice : pkg.price;
 }

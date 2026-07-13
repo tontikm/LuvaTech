@@ -98,6 +98,7 @@ export type QuotationPdfProps = {
   priceEstimate: number;
   terms: string;
   issueDate: string;
+  subscriptionEstimate?: number | null;
   carePlan?: {
     name: string;
     monthlyPrice: number;
@@ -151,13 +152,23 @@ export function QuotationPdfDocument(props: QuotationPdfProps) {
           <Text style={styles.sectionTitle}>Timeline & Investment</Text>
           <Text style={styles.body}>Estimated timeline: {props.estimatedTimeline}</Text>
           <View style={styles.priceBox}>
-            <Text style={styles.label}>Build estimate (excl. VAT)</Text>
+            <Text style={styles.label}>Once-off build (excl. VAT)</Text>
             <Text style={styles.price}>{formatCurrency(props.priceEstimate)}</Text>
           </View>
+          {props.subscriptionEstimate != null ? (
+            <View style={[styles.priceBox, { marginTop: 12 }]}>
+              <Text style={styles.label}>
+                Managed monthly subscription (Essential care included)
+              </Text>
+              <Text style={styles.price}>
+                {formatCurrency(props.subscriptionEstimate)}/mo
+              </Text>
+            </View>
+          ) : null}
           {props.carePlan ? (
             <View style={[styles.priceBox, { marginTop: 12 }]}>
               <Text style={styles.label}>
-                Recommended {props.carePlan.name} care (optional, monthly)
+                Optional {props.carePlan.name} care for once-off ownership
               </Text>
               <Text style={styles.price}>
                 {formatCurrency(props.carePlan.monthlyPrice)}/mo

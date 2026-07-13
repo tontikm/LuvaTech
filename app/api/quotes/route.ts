@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       estimatedTimeline: estimate.estimatedTimeline,
       priceEstimate: estimate.priceEstimate,
       terms: estimate.terms,
+      subscriptionEstimate: estimate.subscriptionEstimate,
       carePlan: estimate.carePlan
         ? {
             name: estimate.carePlan.name,

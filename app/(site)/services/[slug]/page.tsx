@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
-import { getService, SERVICES } from "@/lib/data/services";
+import { getService, getServiceMonthlyStartingFrom, SERVICES } from "@/lib/data/services";
 import {
   getCarePlanStartingFrom,
   getCarePlansForService,
@@ -27,6 +27,7 @@ export default async function ServiceDetailPage({
 
   const carePlans = getCarePlansForService(service.slug);
   const careFrom = getCarePlanStartingFrom(service.slug);
+  const monthlyFrom = getServiceMonthlyStartingFrom(service.slug);
 
   return (
     <div className="pt-32 pb-24">
@@ -53,12 +54,12 @@ export default async function ServiceDetailPage({
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <p className="font-display text-2xl font-semibold">
-            Build from {formatCurrency(service.startingFrom)}
-            {careFrom != null && (
+            Once-off from {formatCurrency(service.startingFrom)}
+            {monthlyFrom != null && (
               <span className="text-lg font-normal text-white/45">
                 {" "}
-                · Care from {formatCurrency(careFrom)}
-                <span className="text-base text-white/35">/mo</span>
+                · or {formatCurrency(monthlyFrom)}
+                <span className="text-base text-white/35">/mo managed</span>
               </span>
             )}
           </p>
@@ -69,8 +70,9 @@ export default async function ServiceDetailPage({
 
         <section className="mt-16">
           <h2 className="font-display text-2xl font-semibold tracking-tight">Packages</h2>
-          <p className="mt-2 text-sm text-white/50">
-            Pick a starting point. We tailor scope after a short discovery call.
+          <p className="mt-2 max-w-2xl text-sm text-white/50">
+            Pick a starting point, then choose once-off ownership or a managed monthly
+            subscription (Essential care included). We tailor scope after a short discovery call.
           </p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {service.packages.map((pkg, index) => (
@@ -85,8 +87,10 @@ export default async function ServiceDetailPage({
               Care plans
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-white/50">
-              Optional monthly hosting, support, and maintenance after launch. Build once,
-              then keep it running with the care tier that fits your team.
+              For once-off builds that need ongoing management
+              {careFrom != null && <> (from {formatCurrency(careFrom)}/mo)</>}. Managed
+              subscriptions already include Essential care — add Growth or Priority care only
+              if you own the build once-off.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {carePlans.map((plan) => (

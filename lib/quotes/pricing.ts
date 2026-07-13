@@ -1,7 +1,9 @@
 import {
   getCarePlanOption,
+  getManagedSubIncludes,
   type CarePlanTierId,
 } from "@/lib/data/care-plans";
+import { getService } from "@/lib/data/services";
 import { formatCurrency } from "@/lib/utils";
 
 export type QuoteInput = {
@@ -30,9 +32,12 @@ export type QuoteEstimate = {
   recommendedSolution: string;
   deliverables: string[];
   estimatedTimeline: string;
+  /** Once-off build estimate. */
   priceEstimate: number;
+  /** Managed monthly subscription estimate (Essential care included). */
+  subscriptionEstimate: number;
   terms: string;
-  /** Recommended optional monthly care (separate from build price). */
+  /** Optional care for once-off ownership only. */
   carePlan: QuoteCarePlan | null;
 };
 
@@ -47,6 +52,13 @@ const BASE_PACKAGES: Record<string, number> = {
   "api-integrations": 3500,
   "cloud-solutions": 2000,
 };
+
+function entryMonthlyForService(slug: string): number {
+  const service = getService(slug);
+  if (service?.packages[0]?.monthlyPrice) return service.packages[0].monthlyPrice;
+  const onceOff = BASE_PACKAGES[slug] ?? 30000;
+  return Math.max(250, Math.round(onceOff / 10 / 50) * 50);
+}
 
 function detectServices(input: QuoteInput): string[] {
   const text = `${input.websiteNeeds ?? ""} ${input.automationNeeds ?? ""}`.toLowerCase();
@@ -126,8 +138,7 @@ function budgetCap(budgetRange: string): number | null {
 }
 
 /**
- * Recommend Growth care for mid/large builds (entry packages sum ≥ R10k
- * or more than one service); otherwise Essential.
+ * Recommend Growth care for mid/large once-off builds; otherwise Essential.
  */
 function recommendCareTier(services: string[], priceEstimate: number): CarePlanTierId {
   if (services.length >= 2 || priceEstimate >= 15000) return "growth";
@@ -143,8 +154,9 @@ function buildCarePlanRecommendation(
   const tier = recommendCareTier(services, priceEstimate);
   const priced = services
     .map((slug) => ({ slug, plan: getCarePlanOption(slug, tier) }))
-    .filter((row): row is { slug: string; plan: NonNullable<ReturnType<typeof getCarePlanOption>> } =>
-      Boolean(row.plan),
+    .filter(
+      (row): row is { slug: string; plan: NonNullable<ReturnType<typeof getCarePlanOption>> } =>
+        Boolean(row.plan),
     );
 
   if (!priced.length) return null;
@@ -161,16 +173,26 @@ function buildCarePlanRecommendation(
   };
 }
 
+function roundToThousand(n: number): number {
+  return Math.round(n / 1000) * 1000;
+}
+
+function roundToFifty(n: number): number {
+  return Math.round(n / 50) * 50;
+}
+
 export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
   const services = detectServices(input);
   const base = services.reduce((sum, slug) => sum + (BASE_PACKAGES[slug] ?? 30000), 0);
+  const monthlyBase = services.reduce((sum, slug) => sum + entryMonthlyForService(slug), 0);
   const empMul = employeeMultiplier(input.employees);
   const timeMul = timelineMultiplier(input.timeline);
-  let price = Math.round((base * empMul * timeMul) / 1000) * 1000;
+  let price = roundToThousand(base * empMul * timeMul);
+  let subscription = Math.max(250, roundToFifty(monthlyBase * empMul * timeMul));
 
   const cap = budgetCap(input.budgetRange);
   if (cap && price > cap) {
-    price = Math.round((cap * 0.92) / 1000) * 1000;
+    price = roundToThousand(cap * 0.92);
   }
 
   const serviceLabels = services.map((s) =>
@@ -197,19 +219,23 @@ export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
     services.length >= 3 ? "8 to 12 weeks" : services.length === 2 ? "6 to 8 weeks" : "4 to 6 weeks";
 
   const carePlan = buildCarePlanRecommendation(services, price);
-  const careTerms = carePlan
-    ? ` Optional ${carePlan.name} care plan available from ${formatCurrency(carePlan.monthlyPrice)}/mo after launch (invoiced monthly, cancel anytime); build deposit terms above do not include care.`
-    : "";
+  const managedIncludes = getManagedSubIncludes().join("; ");
+
+  const terms =
+    `Once-off: 50% deposit to commence work. 30% on staging approval. 20% on production launch. Quote valid for 14 days. Scope changes documented via change request. All IP transfers on final payment.` +
+    ` Managed subscription alternative: from ${formatCurrency(subscription)}/mo (billed monthly, cancel anytime) including Essential care (${managedIncludes}).` +
+    (carePlan
+      ? ` If choosing once-off ownership, optional ${carePlan.name} care is available from ${formatCurrency(carePlan.monthlyPrice)}/mo after launch.`
+      : "");
 
   return {
     projectSummary: `${input.businessName} requires a modern digital system to ${input.automationNeeds?.slice(0, 120) ?? "streamline operations and capture more leads"}. Based on your ${input.industry} context and team size${input.employees ? ` of ${input.employees}` : ""}, we recommend a phased delivery starting with ${serviceLabels.slice(0, 2).join(" and ")}.`,
-    recommendedSolution: `An integrated stack combining ${serviceLabels.join(", ")}, deployed on Next.js with PostgreSQL, secured authentication, and production-grade monitoring. ${input.websiteNeeds ? `Website scope: ${input.websiteNeeds.slice(0, 100)}.` : ""}`,
+    recommendedSolution: `An integrated stack combining ${serviceLabels.join(", ")}, deployed on Next.js with PostgreSQL, secured authentication, and production-grade monitoring. Choose once-off ownership (${formatCurrency(price)}) or a managed monthly subscription (${formatCurrency(subscription)}/mo, Essential care included). ${input.websiteNeeds ? `Website scope: ${input.websiteNeeds.slice(0, 100)}.` : ""}`,
     deliverables,
     estimatedTimeline: input.timeline.includes("week") ? input.timeline : weeks,
     priceEstimate: price,
-    terms:
-      "50% deposit to commence work. 30% on staging approval. 20% on production launch. Quote valid for 14 days. Scope changes documented via change request. All IP transfers on final payment." +
-      careTerms,
+    subscriptionEstimate: subscription,
+    terms,
     carePlan,
   };
 }

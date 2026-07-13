@@ -3,9 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Bot, ArrowRight } from "lucide-react";
-import { SERVICES } from "@/lib/data/services";
+import {
+  SERVICES,
+  type BillingMode,
+} from "@/lib/data/services";
 import {
   getCarePlansForService,
+  getManagedSubIncludes,
   type CarePlanTierId,
 } from "@/lib/data/care-plans";
 import { Button } from "@/components/ui";
@@ -47,6 +51,7 @@ export function QuoteCalculator({
   const [packageName, setPackageName] = useState(
     service.packages.find((p) => p.highlighted)?.name ?? service.packages[0].name,
   );
+  const [billingMode, setBillingMode] = useState<BillingMode>("once-off");
   const [sizeId, setSizeId] = useState<(typeof SIZE_BANDS)[number]["id"]>("mid");
   const [urgencyId, setUrgencyId] = useState<(typeof URGENCY)[number]["id"]>("standard");
   const [extras, setExtras] = useState<string[]>([]);
@@ -57,19 +62,23 @@ export function QuoteCalculator({
     service.packages.find((p) => p.name === packageName) ?? service.packages[0];
   const size = SIZE_BANDS.find((s) => s.id === sizeId)!;
   const urgency = URGENCY.find((u) => u.id === urgencyId)!;
+  const isMonthly = billingMode === "monthly";
   const selectedCare =
-    careTier === "none"
+    isMonthly || careTier === "none"
       ? null
       : (carePlans.find((p) => p.id === careTier) ?? null);
 
   const estimate = useMemo(() => {
-    const base = selectedPackage.price;
+    const base = isMonthly ? selectedPackage.monthlyPrice : selectedPackage.price;
     const sizeAdj = Math.round(base * (size.multiplier - 1));
     const rushAdj = Math.round((base + sizeAdj) * (urgency.multiplier - 1));
-    const extrasTotal = EXTRAS.filter((e) => extras.includes(e.id)).reduce(
-      (sum, e) => sum + e.amount,
-      0,
-    );
+    // Extras are once-off add-ons; only fold into once-off estimates.
+    const extrasTotal = isMonthly
+      ? 0
+      : EXTRAS.filter((e) => extras.includes(e.id)).reduce(
+          (sum, e) => sum + e.amount,
+          0,
+        );
     const total = base + sizeAdj + rushAdj + extrasTotal;
     return {
       base,
@@ -87,7 +96,7 @@ export function QuoteCalculator({
             })
           : selectedPackage.timeline,
     };
-  }, [selectedPackage, size, urgency, extras, selectedCare]);
+  }, [selectedPackage, size, urgency, extras, selectedCare, isMonthly]);
 
   function onServiceChange(slug: string) {
     setServiceSlug(slug);
@@ -98,6 +107,11 @@ export function QuoteCalculator({
 
   function toggleExtra(id: string) {
     setExtras((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
+  function onBillingChange(mode: BillingMode) {
+    setBillingMode(mode);
+    if (mode === "monthly") setCareTier("none");
   }
 
   return (
@@ -144,6 +158,37 @@ export function QuoteCalculator({
           </div>
 
           <div>
+            <label className="text-xs uppercase tracking-wider text-white/40">Billing</label>
+            <div className="mt-1.5 flex flex-wrap gap-2">
+              {(
+                [
+                  { id: "once-off" as const, label: "Once-off" },
+                  { id: "monthly" as const, label: "Monthly · managed" },
+                ] as const
+              ).map((mode) => (
+                <button
+                  key={mode.id}
+                  type="button"
+                  onClick={() => onBillingChange(mode.id)}
+                  className={cn(
+                    "rounded-lg border px-3 py-1.5 text-xs transition-colors",
+                    billingMode === mode.id
+                      ? "border-accent bg-accent/10 text-white"
+                      : "border-white/10 text-white/50 hover:border-white/25",
+                  )}
+                >
+                  {mode.label}
+                </button>
+              ))}
+            </div>
+            {isMonthly && (
+              <p className="mt-2 text-[11px] leading-relaxed text-white/35">
+                Includes: {getManagedSubIncludes().slice(0, 2).join(", ")}, and more.
+              </p>
+            )}
+          </div>
+
+          <div>
             <label className="text-xs uppercase tracking-wider text-white/40">Company size</label>
             <div className="mt-1.5 flex flex-wrap gap-2">
               {SIZE_BANDS.map((band) => (
@@ -185,10 +230,10 @@ export function QuoteCalculator({
             </div>
           </div>
 
-          {carePlans.length > 0 && (
+          {!isMonthly && carePlans.length > 0 && (
             <div>
               <label className="text-xs uppercase tracking-wider text-white/40">
-                Care plan
+                Care plan (once-off only)
               </label>
               <div className="mt-1.5 flex flex-wrap gap-2">
                 <button
@@ -222,41 +267,51 @@ export function QuoteCalculator({
             </div>
           )}
 
-          <div>
-            <label className="text-xs uppercase tracking-wider text-white/40">Extras</label>
-            <div className="mt-1.5 space-y-2">
-              {EXTRAS.map((extra) => (
-                <label
-                  key={extra.id}
-                  className="flex cursor-pointer items-center justify-between rounded-lg border border-white/10 px-3 py-2 text-sm text-white/60 hover:border-white/20"
-                >
-                  <span className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={extras.includes(extra.id)}
-                      onChange={() => toggleExtra(extra.id)}
-                      className="accent-[var(--accent)]"
-                    />
-                    {extra.label}
-                  </span>
-                  <span className="text-xs text-white/35">+{formatCurrency(extra.amount)}</span>
-                </label>
-              ))}
+          {!isMonthly && (
+            <div>
+              <label className="text-xs uppercase tracking-wider text-white/40">Extras</label>
+              <div className="mt-1.5 space-y-2">
+                {EXTRAS.map((extra) => (
+                  <label
+                    key={extra.id}
+                    className="flex cursor-pointer items-center justify-between rounded-lg border border-white/10 px-3 py-2 text-sm text-white/60 hover:border-white/20"
+                  >
+                    <span className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={extras.includes(extra.id)}
+                        onChange={() => toggleExtra(extra.id)}
+                        className="accent-[var(--accent)]"
+                      />
+                      {extra.label}
+                    </span>
+                    <span className="text-xs text-white/35">+{formatCurrency(extra.amount)}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-          <p className="text-xs uppercase tracking-wider text-white/40">Build estimate</p>
+          <p className="text-xs uppercase tracking-wider text-white/40">
+            {isMonthly ? "Managed subscription" : "Once-off build"}
+          </p>
           <p
-            key={estimate.total}
+            key={`${billingMode}-${estimate.total}`}
             className="mt-2 font-display text-3xl font-semibold text-accent transition-opacity"
           >
             {formatCurrency(estimate.total)}
+            {isMonthly && (
+              <span className="ml-1 text-lg font-normal text-white/40">/mo</span>
+            )}
           </p>
-          <p className="mt-1 text-xs text-white/40">Timeline {estimate.timeline}</p>
+          <p className="mt-1 text-xs text-white/40">
+            Timeline {estimate.timeline}
+            {isMonthly ? " · Essential care included" : ""}
+          </p>
 
-          {estimate.careMonthly > 0 && selectedCare && (
+          {!isMonthly && estimate.careMonthly > 0 && selectedCare && (
             <div className="mt-3 rounded-lg border border-accent/20 bg-accent/[0.06] px-3 py-2">
               <p className="text-xs text-white/45">{selectedCare.name} care</p>
               <p className="font-display text-lg font-semibold text-white">
@@ -268,28 +323,39 @@ export function QuoteCalculator({
 
           <div className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-3 text-xs text-white/45">
             <div className="flex justify-between">
-              <span>{selectedPackage.name} package</span>
-              <span>{formatCurrency(estimate.base)}</span>
+              <span>
+                {selectedPackage.name} {isMonthly ? "monthly" : "package"}
+              </span>
+              <span>
+                {formatCurrency(estimate.base)}
+                {isMonthly ? "/mo" : ""}
+              </span>
             </div>
             {estimate.sizeAdj > 0 && (
               <div className="flex justify-between">
                 <span>Team size adjustment</span>
-                <span>+{formatCurrency(estimate.sizeAdj)}</span>
+                <span>
+                  +{formatCurrency(estimate.sizeAdj)}
+                  {isMonthly ? "/mo" : ""}
+                </span>
               </div>
             )}
             {estimate.rushAdj > 0 && (
               <div className="flex justify-between">
                 <span>Rush delivery</span>
-                <span>+{formatCurrency(estimate.rushAdj)}</span>
+                <span>
+                  +{formatCurrency(estimate.rushAdj)}
+                  {isMonthly ? "/mo" : ""}
+                </span>
               </div>
             )}
-            {estimate.extrasTotal > 0 && (
+            {!isMonthly && estimate.extrasTotal > 0 && (
               <div className="flex justify-between">
                 <span>Extras</span>
                 <span>+{formatCurrency(estimate.extrasTotal)}</span>
               </div>
             )}
-            {estimate.careMonthly > 0 && selectedCare && (
+            {!isMonthly && estimate.careMonthly > 0 && selectedCare && (
               <div className="flex justify-between text-accent/80">
                 <span>{selectedCare.name} care (monthly)</span>
                 <span>{formatCurrency(estimate.careMonthly)}/mo</span>
@@ -315,7 +381,9 @@ export function QuoteCalculator({
           </div>
           <p className="mt-3 text-[11px] text-white/30">
             Demo estimate only. Formal quotes are generated by the AI assistant.
-            Care plans are optional and billed monthly after launch.
+            {isMonthly
+              ? " Managed subscriptions include Essential care and are billed monthly."
+              : " Care plans are optional add-ons for once-off ownership."}
           </p>
         </div>
       </div>

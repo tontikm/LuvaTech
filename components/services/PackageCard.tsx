@@ -101,8 +101,16 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
       <p className="mt-1 text-sm text-white/45 transition-colors group-hover:text-white/55">
         {pkg.description}
       </p>
-      <p className="mt-4 font-display text-2xl font-semibold">{formatCurrency(pkg.price)}</p>
-      <p className="mt-1 text-xs text-white/40">{pkg.timeline}</p>
+      <p className="mt-4 font-display text-2xl font-semibold">
+        {formatCurrency(pkg.price)}
+      </p>
+      <p className="mt-0.5 text-xs text-white/40">Once-off</p>
+      <p className="mt-3 font-display text-lg font-semibold text-white/85">
+        {formatCurrency(pkg.monthlyPrice)}
+        <span className="ml-1 text-sm font-normal text-white/40">/mo</span>
+      </p>
+      <p className="mt-0.5 text-xs text-white/40">Monthly · managed</p>
+      <p className="mt-2 text-xs text-white/40">{pkg.timeline}</p>
       <ul className="mt-5 flex-1 space-y-2">
         {pkg.includes.map((item) => (
           <li key={item} className="flex gap-2 text-sm text-white/60">

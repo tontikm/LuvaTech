@@ -21,7 +21,7 @@ import { SlotTakenError } from "@/lib/db/errors";
 import { calculateQuoteEstimate } from "@/lib/quotes/pricing";
 import { sendBookingConfirmation, sendQuoteEmail } from "@/lib/email/templates";
 import { renderQuotationPdf } from "@/lib/pdf/render";
-import { SERVICES } from "@/lib/data/services";
+import { SERVICES, getServiceMonthlyStartingFrom } from "@/lib/data/services";
 import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
 import { BRAND_NAME, CONTACT } from "@/lib/site";
 import { formatCurrency } from "@/lib/utils";
@@ -66,17 +66,19 @@ function createChatTools(ctx: ChatToolContext) {
       description: "List LuvaTech services with starting prices",
       inputSchema: z.object({}),
       execute: async () =>
-        SERVICES.map((s) => ({
-          title: s.title,
-          slug: s.slug,
-          startingFrom: formatCurrency(s.startingFrom),
-          careFrom: (() => {
-            const care = getCarePlanStartingFrom(s.slug);
-            return care != null ? `${formatCurrency(care)}/mo` : null;
-          })(),
-          timeline: s.timeline,
-          headline: s.headline,
-        })),
+        SERVICES.map((s) => {
+          const monthly = getServiceMonthlyStartingFrom(s.slug);
+          const care = getCarePlanStartingFrom(s.slug);
+          return {
+            title: s.title,
+            slug: s.slug,
+            startingFrom: formatCurrency(s.startingFrom),
+            fromMonthly: monthly != null ? `${formatCurrency(monthly)}/mo managed` : null,
+            careFromOnceOff: care != null ? `${formatCurrency(care)}/mo` : null,
+            timeline: s.timeline,
+            headline: s.headline,
+          };
+        }),
     }),
     estimatePricing: tool({
       description: "Calculate a rough project estimate before formal quote",
@@ -84,17 +86,20 @@ function createChatTools(ctx: ChatToolContext) {
       execute: async (input) => {
         const estimate = calculateQuoteEstimate(input);
         return {
-          priceEstimate: formatCurrency(estimate.priceEstimate),
+          onceOff: formatCurrency(estimate.priceEstimate),
+          managedMonthly:
+            formatCurrency(estimate.subscriptionEstimate) +
+            "/mo (Essential care included)",
           timeline: estimate.estimatedTimeline,
           deliverables: estimate.deliverables.slice(0, 5),
-          carePlan: estimate.carePlan
+          carePlanOnceOff: estimate.carePlan
             ? {
                 name: estimate.carePlan.name,
                 monthlyPrice: formatCurrency(estimate.carePlan.monthlyPrice) + "/mo",
-                note: "Optional monthly care after launch; not included in build estimate.",
+                note: "Optional only if the customer chooses once-off ownership.",
               }
             : null,
-          note: "Formal quote can be generated once customer confirms details.",
+          note: "Present both once-off and managed monthly. Formal quote can be generated once customer confirms details.",
         };
       },
     }),
@@ -133,6 +138,7 @@ function createChatTools(ctx: ChatToolContext) {
           estimatedTimeline: estimate.estimatedTimeline,
           priceEstimate: estimate.priceEstimate,
           terms: estimate.terms,
+          subscriptionEstimate: estimate.subscriptionEstimate,
           carePlan: estimate.carePlan
             ? {
                 name: estimate.carePlan.name,
@@ -154,9 +160,10 @@ function createChatTools(ctx: ChatToolContext) {
         return {
           success: true,
           quoteNumber: quoteData.quoteNumber,
-          total: formatCurrency(estimate.priceEstimate),
+          onceOff: formatCurrency(estimate.priceEstimate),
+          managedMonthly: formatCurrency(estimate.subscriptionEstimate) + "/mo",
           carePlan: estimate.carePlan
-            ? `${estimate.carePlan.name} from ${formatCurrency(estimate.carePlan.monthlyPrice)}/mo`
+            ? `${estimate.carePlan.name} from ${formatCurrency(estimate.carePlan.monthlyPrice)}/mo (once-off path)`
             : null,
           timeline: estimate.estimatedTimeline,
           emailSent: emailResult.ok,
@@ -283,12 +290,13 @@ Your role:
 - Explain services clearly and recommend the right combination
 - Qualify leads by asking about business name, industry, team size, requirements, budget, and timeline
 - Use estimatePricing for rough estimates, generateQuote only after confirming ALL details with the customer
-- When discussing pricing, present the build estimate and optional monthly care plan separately — care is not included in the build total
+- When discussing pricing, always offer two paths: once-off ownership OR managed monthly subscription (Essential care included on the monthly path)
+- Care plans (Essential/Growth/Priority) are optional add-ons for once-off buyers only — do not add care on top of managed subscriptions
 - The customer must type their email in the chat before generateQuote or bookConsultation can succeed
 - After generating a quote, offer to book a free consultation using getAvailableSlots and bookConsultation
 - Be conversational, professional, and concise. Avoid sounding salesy. Do not use em dashes in replies.
 
-Services: business automation, CRM systems, internal dashboards, websites, appointment systems, quotation systems, API integrations, cloud solutions, and AI chatbots. Each service has optional monthly care plans (Essential, Growth, Priority) for hosting, support, and maintenance after launch.
+Services: business automation, CRM systems, internal dashboards, websites, appointment systems, quotation systems, API integrations, cloud solutions, and AI chatbots. Each package can be purchased once-off or as a managed monthly subscription.
 
 Pricing is in ZAR. Quotes are estimates subject to discovery workshop.
 Contact: ${CONTACT.email} | ${CONTACT.phone}

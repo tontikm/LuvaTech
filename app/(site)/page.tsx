@@ -2,8 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { HeroSection, FeaturesSection, CtaSection } from "@/components/marketing/sections";
 import { ProductLabSection } from "@/components/demos/ProductLabSection";
-import { SERVICES } from "@/lib/data/services";
-import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
+import { SERVICES, getServiceMonthlyStartingFrom } from "@/lib/data/services";
 import { CASE_STUDIES } from "@/lib/data/case-studies";
 import { GlassCard, Badge } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
@@ -36,7 +35,7 @@ export default function HomePage() {
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.slice(0, 6).map((service) => {
-              const careFrom = getCarePlanStartingFrom(service.slug);
+              const monthlyFrom = getServiceMonthlyStartingFrom(service.slug);
               return (
               <Link key={service.slug} href={`/services/${service.slug}`}>
                 <GlassCard className="h-full hover:border-white/15 transition-all group">
@@ -48,9 +47,9 @@ export default function HomePage() {
                     {service.headline}
                   </p>
                   <p className="mt-4 text-sm text-white/30">
-                    Build from {formatCurrency(service.startingFrom)}
-                    {careFrom != null && (
-                      <> · Care from {formatCurrency(careFrom)}/mo</>
+                    Once-off from {formatCurrency(service.startingFrom)}
+                    {monthlyFrom != null && (
+                      <> · or from {formatCurrency(monthlyFrom)}/mo</>
                     )}
                   </p>
                 </GlassCard>
