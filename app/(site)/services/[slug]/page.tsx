@@ -2,10 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check } from "lucide-react";
 import { getService, SERVICES } from "@/lib/data/services";
+import {
+  getCarePlanStartingFrom,
+  getCarePlansForService,
+} from "@/lib/data/care-plans";
 import { Badge, Button, GlassCard } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
 import { ServiceDemoEmbed } from "@/components/demos/ServiceDemoEmbed";
 import { PackageCard } from "@/components/services/PackageCard";
+import { CarePlanCard } from "@/components/services/CarePlanCard";
 
 export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
@@ -19,6 +24,9 @@ export default async function ServiceDetailPage({
   const { slug } = await params;
   const service = getService(slug);
   if (!service) notFound();
+
+  const carePlans = getCarePlansForService(service.slug);
+  const careFrom = getCarePlanStartingFrom(service.slug);
 
   return (
     <div className="pt-32 pb-24">
@@ -45,7 +53,14 @@ export default async function ServiceDetailPage({
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
           <p className="font-display text-2xl font-semibold">
-            From {formatCurrency(service.startingFrom)}
+            Build from {formatCurrency(service.startingFrom)}
+            {careFrom != null && (
+              <span className="text-lg font-normal text-white/45">
+                {" "}
+                · Care from {formatCurrency(careFrom)}
+                <span className="text-base text-white/35">/mo</span>
+              </span>
+            )}
           </p>
           <Link href="/book">
             <Button size="md">Book Demo</Button>
@@ -63,6 +78,23 @@ export default async function ServiceDetailPage({
             ))}
           </div>
         </section>
+
+        {carePlans.length > 0 && (
+          <section className="mt-16">
+            <h2 className="font-display text-2xl font-semibold tracking-tight">
+              Care plans
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-white/50">
+              Optional monthly hosting, support, and maintenance after launch. Build once,
+              then keep it running with the care tier that fits your team.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {carePlans.map((plan) => (
+                <CarePlanCard key={plan.id} plan={plan} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <ServiceDemoEmbed slug={service.slug} />
 

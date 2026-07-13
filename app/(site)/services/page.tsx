@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SERVICES } from "@/lib/data/services";
+import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
 import { GlassCard, Badge } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
 
@@ -20,7 +21,9 @@ export default function ServicesPage() {
         </p>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2">
-          {SERVICES.map((service) => (
+          {SERVICES.map((service) => {
+            const careFrom = getCarePlanStartingFrom(service.slug);
+            return (
             <Link key={service.slug} href={`/services/${service.slug}`}>
               <GlassCard className="h-full hover:border-white/15 transition-all group">
                 <div className="flex items-start justify-between">
@@ -32,11 +35,15 @@ export default function ServicesPage() {
                   {service.headline}
                 </p>
                 <p className="mt-6 text-sm text-white/30">
-                  From {formatCurrency(service.startingFrom)}
+                  Build from {formatCurrency(service.startingFrom)}
+                  {careFrom != null && (
+                    <> · Care from {formatCurrency(careFrom)}/mo</>
+                  )}
                 </p>
               </GlassCard>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

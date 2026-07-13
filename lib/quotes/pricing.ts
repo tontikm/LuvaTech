@@ -1,3 +1,9 @@
+import {
+  getCarePlanOption,
+  type CarePlanTierId,
+} from "@/lib/data/care-plans";
+import { formatCurrency } from "@/lib/utils";
+
 export type QuoteInput = {
   businessName: string;
   contactName: string;
@@ -11,6 +17,14 @@ export type QuoteInput = {
   timeline: string;
 };
 
+export type QuoteCarePlan = {
+  tier: CarePlanTierId;
+  name: string;
+  monthlyPrice: number;
+  includes: string[];
+  services: string[];
+};
+
 export type QuoteEstimate = {
   projectSummary: string;
   recommendedSolution: string;
@@ -18,6 +32,8 @@ export type QuoteEstimate = {
   estimatedTimeline: string;
   priceEstimate: number;
   terms: string;
+  /** Recommended optional monthly care (separate from build price). */
+  carePlan: QuoteCarePlan | null;
 };
 
 const BASE_PACKAGES: Record<string, number> = {
@@ -109,6 +125,42 @@ function budgetCap(budgetRange: string): number | null {
   return nums.length ? Math.max(...nums) : null;
 }
 
+/**
+ * Recommend Growth care for mid/large builds (entry packages sum ≥ R10k
+ * or more than one service); otherwise Essential.
+ */
+function recommendCareTier(services: string[], priceEstimate: number): CarePlanTierId {
+  if (services.length >= 2 || priceEstimate >= 15000) return "growth";
+  return "essential";
+}
+
+function buildCarePlanRecommendation(
+  services: string[],
+  priceEstimate: number,
+): QuoteCarePlan | null {
+  if (!services.length) return null;
+
+  const tier = recommendCareTier(services, priceEstimate);
+  const priced = services
+    .map((slug) => ({ slug, plan: getCarePlanOption(slug, tier) }))
+    .filter((row): row is { slug: string; plan: NonNullable<ReturnType<typeof getCarePlanOption>> } =>
+      Boolean(row.plan),
+    );
+
+  if (!priced.length) return null;
+
+  const monthlyPrice = priced.reduce((sum, row) => sum + row.plan.monthlyPrice, 0);
+  const primary = priced[0].plan;
+
+  return {
+    tier,
+    name: primary.name,
+    monthlyPrice,
+    includes: primary.includes,
+    services: priced.map((row) => row.slug),
+  };
+}
+
 export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
   const services = detectServices(input);
   const base = services.reduce((sum, slug) => sum + (BASE_PACKAGES[slug] ?? 30000), 0);
@@ -118,7 +170,7 @@ export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
 
   const cap = budgetCap(input.budgetRange);
   if (cap && price > cap) {
-    price = Math.round(cap * 0.92 / 1000) * 1000;
+    price = Math.round((cap * 0.92) / 1000) * 1000;
   }
 
   const serviceLabels = services.map((s) =>
@@ -144,6 +196,11 @@ export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
   const weeks =
     services.length >= 3 ? "8 to 12 weeks" : services.length === 2 ? "6 to 8 weeks" : "4 to 6 weeks";
 
+  const carePlan = buildCarePlanRecommendation(services, price);
+  const careTerms = carePlan
+    ? ` Optional ${carePlan.name} care plan available from ${formatCurrency(carePlan.monthlyPrice)}/mo after launch (invoiced monthly, cancel anytime); build deposit terms above do not include care.`
+    : "";
+
   return {
     projectSummary: `${input.businessName} requires a modern digital system to ${input.automationNeeds?.slice(0, 120) ?? "streamline operations and capture more leads"}. Based on your ${input.industry} context and team size${input.employees ? ` of ${input.employees}` : ""}, we recommend a phased delivery starting with ${serviceLabels.slice(0, 2).join(" and ")}.`,
     recommendedSolution: `An integrated stack combining ${serviceLabels.join(", ")}, deployed on Next.js with PostgreSQL, secured authentication, and production-grade monitoring. ${input.websiteNeeds ? `Website scope: ${input.websiteNeeds.slice(0, 100)}.` : ""}`,
@@ -151,7 +208,9 @@ export function calculateQuoteEstimate(input: QuoteInput): QuoteEstimate {
     estimatedTimeline: input.timeline.includes("week") ? input.timeline : weeks,
     priceEstimate: price,
     terms:
-      "50% deposit to commence work. 30% on staging approval. 20% on production launch. Quote valid for 14 days. Scope changes documented via change request. All IP transfers on final payment.",
+      "50% deposit to commence work. 30% on staging approval. 20% on production launch. Quote valid for 14 days. Scope changes documented via change request. All IP transfers on final payment." +
+      careTerms,
+    carePlan,
   };
 }
 

@@ -98,6 +98,11 @@ export type QuotationPdfProps = {
   priceEstimate: number;
   terms: string;
   issueDate: string;
+  carePlan?: {
+    name: string;
+    monthlyPrice: number;
+    includes: string[];
+  } | null;
 };
 
 export function QuotationPdfDocument(props: QuotationPdfProps) {
@@ -146,9 +151,24 @@ export function QuotationPdfDocument(props: QuotationPdfProps) {
           <Text style={styles.sectionTitle}>Timeline & Investment</Text>
           <Text style={styles.body}>Estimated timeline: {props.estimatedTimeline}</Text>
           <View style={styles.priceBox}>
-            <Text style={styles.label}>Total estimate (excl. VAT)</Text>
+            <Text style={styles.label}>Build estimate (excl. VAT)</Text>
             <Text style={styles.price}>{formatCurrency(props.priceEstimate)}</Text>
           </View>
+          {props.carePlan ? (
+            <View style={[styles.priceBox, { marginTop: 12 }]}>
+              <Text style={styles.label}>
+                Recommended {props.carePlan.name} care (optional, monthly)
+              </Text>
+              <Text style={styles.price}>
+                {formatCurrency(props.carePlan.monthlyPrice)}/mo
+              </Text>
+              {props.carePlan.includes.map((item, i) => (
+                <Text key={i} style={[styles.body, { marginTop: 4 }]}>
+                  • {item}
+                </Text>
+              ))}
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.section}>

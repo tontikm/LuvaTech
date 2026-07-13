@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { HeroSection, FeaturesSection, CtaSection } from "@/components/marketing/sections";
 import { ProductLabSection } from "@/components/demos/ProductLabSection";
 import { SERVICES } from "@/lib/data/services";
+import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
 import { CASE_STUDIES } from "@/lib/data/case-studies";
 import { GlassCard, Badge } from "@/components/ui";
 import { formatCurrency } from "@/lib/utils";
@@ -34,7 +35,9 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.slice(0, 6).map((service) => (
+            {SERVICES.slice(0, 6).map((service) => {
+              const careFrom = getCarePlanStartingFrom(service.slug);
+              return (
               <Link key={service.slug} href={`/services/${service.slug}`}>
                 <GlassCard className="h-full hover:border-white/15 transition-all group">
                   <Badge>{service.timeline}</Badge>
@@ -45,11 +48,15 @@ export default function HomePage() {
                     {service.headline}
                   </p>
                   <p className="mt-4 text-sm text-white/30">
-                    From {formatCurrency(service.startingFrom)}
+                    Build from {formatCurrency(service.startingFrom)}
+                    {careFrom != null && (
+                      <> · Care from {formatCurrency(careFrom)}/mo</>
+                    )}
                   </p>
                 </GlassCard>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

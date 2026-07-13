@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Bot, ArrowRight } from "lucide-react";
 import { SERVICES } from "@/lib/data/services";
+import {
+  getCarePlansForService,
+  type CarePlanTierId,
+} from "@/lib/data/care-plans";
 import { Button } from "@/components/ui";
 import { formatCurrency, cn } from "@/lib/utils";
 import { DemoShell } from "@/components/demos/DemoShell";
@@ -27,6 +31,8 @@ const EXTRAS: Extra[] = [
   { id: "support", label: "90-day support", amount: 15000 },
 ];
 
+type CareSelection = "none" | CarePlanTierId;
+
 export function QuoteCalculator({
   compact,
   lockServiceSlug,
@@ -44,11 +50,17 @@ export function QuoteCalculator({
   const [sizeId, setSizeId] = useState<(typeof SIZE_BANDS)[number]["id"]>("mid");
   const [urgencyId, setUrgencyId] = useState<(typeof URGENCY)[number]["id"]>("standard");
   const [extras, setExtras] = useState<string[]>([]);
+  const [careTier, setCareTier] = useState<CareSelection>("none");
 
+  const carePlans = getCarePlansForService(service.slug);
   const selectedPackage =
     service.packages.find((p) => p.name === packageName) ?? service.packages[0];
   const size = SIZE_BANDS.find((s) => s.id === sizeId)!;
   const urgency = URGENCY.find((u) => u.id === urgencyId)!;
+  const selectedCare =
+    careTier === "none"
+      ? null
+      : (carePlans.find((p) => p.id === careTier) ?? null);
 
   const estimate = useMemo(() => {
     const base = selectedPackage.price;
@@ -65,6 +77,7 @@ export function QuoteCalculator({
       rushAdj,
       extrasTotal,
       total,
+      careMonthly: selectedCare?.monthlyPrice ?? 0,
       timeline:
         urgency.id === "rush"
           ? selectedPackage.timeline.replace(/(\d+) to (\d+)/, (_, a, b) => {
@@ -74,12 +87,13 @@ export function QuoteCalculator({
             })
           : selectedPackage.timeline,
     };
-  }, [selectedPackage, size, urgency, extras]);
+  }, [selectedPackage, size, urgency, extras, selectedCare]);
 
   function onServiceChange(slug: string) {
     setServiceSlug(slug);
     const next = SERVICES.find((s) => s.slug === slug)!;
     setPackageName(next.packages.find((p) => p.highlighted)?.name ?? next.packages[0].name);
+    setCareTier("none");
   }
 
   function toggleExtra(id: string) {
@@ -171,6 +185,43 @@ export function QuoteCalculator({
             </div>
           </div>
 
+          {carePlans.length > 0 && (
+            <div>
+              <label className="text-xs uppercase tracking-wider text-white/40">
+                Care plan
+              </label>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCareTier("none")}
+                  className={cn(
+                    "rounded-lg border px-3 py-1.5 text-xs transition-colors",
+                    careTier === "none"
+                      ? "border-accent bg-accent/10 text-white"
+                      : "border-white/10 text-white/50 hover:border-white/25",
+                  )}
+                >
+                  None
+                </button>
+                {carePlans.map((plan) => (
+                  <button
+                    key={plan.id}
+                    type="button"
+                    onClick={() => setCareTier(plan.id)}
+                    className={cn(
+                      "rounded-lg border px-3 py-1.5 text-xs transition-colors",
+                      careTier === plan.id
+                        ? "border-accent bg-accent/10 text-white"
+                        : "border-white/10 text-white/50 hover:border-white/25",
+                    )}
+                  >
+                    {plan.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="text-xs uppercase tracking-wider text-white/40">Extras</label>
             <div className="mt-1.5 space-y-2">
@@ -196,7 +247,7 @@ export function QuoteCalculator({
         </div>
 
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-          <p className="text-xs uppercase tracking-wider text-white/40">Estimate</p>
+          <p className="text-xs uppercase tracking-wider text-white/40">Build estimate</p>
           <p
             key={estimate.total}
             className="mt-2 font-display text-3xl font-semibold text-accent transition-opacity"
@@ -204,6 +255,16 @@ export function QuoteCalculator({
             {formatCurrency(estimate.total)}
           </p>
           <p className="mt-1 text-xs text-white/40">Timeline {estimate.timeline}</p>
+
+          {estimate.careMonthly > 0 && selectedCare && (
+            <div className="mt-3 rounded-lg border border-accent/20 bg-accent/[0.06] px-3 py-2">
+              <p className="text-xs text-white/45">{selectedCare.name} care</p>
+              <p className="font-display text-lg font-semibold text-white">
+                {formatCurrency(estimate.careMonthly)}
+                <span className="ml-1 text-sm font-normal text-white/40">/mo</span>
+              </p>
+            </div>
+          )}
 
           <div className="mt-4 space-y-1.5 border-t border-white/[0.06] pt-3 text-xs text-white/45">
             <div className="flex justify-between">
@@ -228,6 +289,12 @@ export function QuoteCalculator({
                 <span>+{formatCurrency(estimate.extrasTotal)}</span>
               </div>
             )}
+            {estimate.careMonthly > 0 && selectedCare && (
+              <div className="flex justify-between text-accent/80">
+                <span>{selectedCare.name} care (monthly)</span>
+                <span>{formatCurrency(estimate.careMonthly)}/mo</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-5 flex flex-col gap-2 sm:flex-row">
@@ -248,6 +315,7 @@ export function QuoteCalculator({
           </div>
           <p className="mt-3 text-[11px] text-white/30">
             Demo estimate only. Formal quotes are generated by the AI assistant.
+            Care plans are optional and billed monthly after launch.
           </p>
         </div>
       </div>

@@ -22,6 +22,7 @@ import { calculateQuoteEstimate } from "@/lib/quotes/pricing";
 import { sendBookingConfirmation, sendQuoteEmail } from "@/lib/email/templates";
 import { renderQuotationPdf } from "@/lib/pdf/render";
 import { SERVICES } from "@/lib/data/services";
+import { getCarePlanStartingFrom } from "@/lib/data/care-plans";
 import { BRAND_NAME, CONTACT } from "@/lib/site";
 import { formatCurrency } from "@/lib/utils";
 import { isValidFutureSlot } from "@/lib/booking/slots";
@@ -69,6 +70,10 @@ function createChatTools(ctx: ChatToolContext) {
           title: s.title,
           slug: s.slug,
           startingFrom: formatCurrency(s.startingFrom),
+          careFrom: (() => {
+            const care = getCarePlanStartingFrom(s.slug);
+            return care != null ? `${formatCurrency(care)}/mo` : null;
+          })(),
           timeline: s.timeline,
           headline: s.headline,
         })),
@@ -82,6 +87,13 @@ function createChatTools(ctx: ChatToolContext) {
           priceEstimate: formatCurrency(estimate.priceEstimate),
           timeline: estimate.estimatedTimeline,
           deliverables: estimate.deliverables.slice(0, 5),
+          carePlan: estimate.carePlan
+            ? {
+                name: estimate.carePlan.name,
+                monthlyPrice: formatCurrency(estimate.carePlan.monthlyPrice) + "/mo",
+                note: "Optional monthly care after launch; not included in build estimate.",
+              }
+            : null,
           note: "Formal quote can be generated once customer confirms details.",
         };
       },
@@ -121,6 +133,13 @@ function createChatTools(ctx: ChatToolContext) {
           estimatedTimeline: estimate.estimatedTimeline,
           priceEstimate: estimate.priceEstimate,
           terms: estimate.terms,
+          carePlan: estimate.carePlan
+            ? {
+                name: estimate.carePlan.name,
+                monthlyPrice: estimate.carePlan.monthlyPrice,
+                includes: estimate.carePlan.includes,
+              }
+            : null,
         };
 
         const pdfBuffer = await renderQuotationPdf({
@@ -136,6 +155,9 @@ function createChatTools(ctx: ChatToolContext) {
           success: true,
           quoteNumber: quoteData.quoteNumber,
           total: formatCurrency(estimate.priceEstimate),
+          carePlan: estimate.carePlan
+            ? `${estimate.carePlan.name} from ${formatCurrency(estimate.carePlan.monthlyPrice)}/mo`
+            : null,
           timeline: estimate.estimatedTimeline,
           emailSent: emailResult.ok,
           message: `Quotation ${quoteData.quoteNumber} has been generated${emailResult.ok ? ` and emailed to ${input.email}` : ""}. Would you like to schedule a free consultation?`,
@@ -261,11 +283,12 @@ Your role:
 - Explain services clearly and recommend the right combination
 - Qualify leads by asking about business name, industry, team size, requirements, budget, and timeline
 - Use estimatePricing for rough estimates, generateQuote only after confirming ALL details with the customer
+- When discussing pricing, present the build estimate and optional monthly care plan separately — care is not included in the build total
 - The customer must type their email in the chat before generateQuote or bookConsultation can succeed
 - After generating a quote, offer to book a free consultation using getAvailableSlots and bookConsultation
 - Be conversational, professional, and concise. Avoid sounding salesy. Do not use em dashes in replies.
 
-Services: business automation, CRM systems, internal dashboards, websites, appointment systems, quotation systems, API integrations, cloud solutions, and AI chatbots.
+Services: business automation, CRM systems, internal dashboards, websites, appointment systems, quotation systems, API integrations, cloud solutions, and AI chatbots. Each service has optional monthly care plans (Essential, Growth, Priority) for hosting, support, and maintenance after launch.
 
 Pricing is in ZAR. Quotes are estimates subject to discovery workshop.
 Contact: ${CONTACT.email} | ${CONTACT.phone}

@@ -14,6 +14,10 @@ type QuoteEmailData = {
   estimatedTimeline: string;
   priceEstimate: number;
   terms: string;
+  carePlan?: {
+    name: string;
+    monthlyPrice: number;
+  } | null;
 };
 
 export async function sendQuoteEmail(
@@ -37,9 +41,14 @@ export async function sendQuoteEmail(
       <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 8px;">Hi ${safe.contactName},</h1>
       <p style="color: #444; line-height: 1.6;">Thank you for speaking with our AI assistant. Your project quotation <strong>${safe.quoteNumber}</strong> for <strong>${safe.businessName}</strong> is attached.</p>
       <div style="background: #f7f7f7; border-radius: 12px; padding: 20px; margin: 24px 0;">
-        <p style="margin: 0 0 4px; color: #666; font-size: 13px;">Estimated investment</p>
+        <p style="margin: 0 0 4px; color: #666; font-size: 13px;">Build estimate</p>
         <p style="margin: 0; font-size: 28px; font-weight: 700;">${formatCurrency(quote.priceEstimate)}</p>
         <p style="margin: 8px 0 0; color: #666; font-size: 14px;">Timeline: ${safe.estimatedTimeline}</p>
+        ${
+          quote.carePlan
+            ? `<p style="margin: 12px 0 0; color: #444; font-size: 14px;">Recommended ${escapeHtml(quote.carePlan.name)} care: <strong>${formatCurrency(quote.carePlan.monthlyPrice)}/mo</strong> (optional, after launch)</p>`
+            : ""
+        }
       </div>
       <h2 style="font-size: 16px; margin-bottom: 8px;">Project summary</h2>
       <p style="color: #444; line-height: 1.6;">${safe.projectSummary}</p>

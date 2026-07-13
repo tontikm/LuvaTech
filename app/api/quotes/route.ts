@@ -29,6 +29,13 @@ export async function POST(req: Request) {
       estimatedTimeline: estimate.estimatedTimeline,
       priceEstimate: estimate.priceEstimate,
       terms: estimate.terms,
+      carePlan: estimate.carePlan
+        ? {
+            name: estimate.carePlan.name,
+            monthlyPrice: estimate.carePlan.monthlyPrice,
+            includes: estimate.carePlan.includes,
+          }
+        : null,
     };
 
     const pdfBuffer = await renderQuotationPdf({
